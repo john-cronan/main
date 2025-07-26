@@ -1,0 +1,23 @@
+total 87
+drwxrwxrwx 1 john john 2608 Jul  7 17:42 .
+drwxrwxrwx 1 john john    0 Jul  6 13:21 ..
+drwxrwxrwx 1 john john    0 Jul  6 13:22 bin
+-rwxrwxrwx 1 john john 2762 May 10 08:58 CompressionServiceTests.cs
+-rwxrwxrwx 1 john john 3066 May 13 09:57 CounterModeKeyStreamTests.cs
+-rwxrwxrwx 1 john john 5592 Jun 17 16:50 CryptographyServiceEncryptTests.cs
+-rwxrwxrwx 1 john john  616 Jun 17 17:33 EnumerableExtensionsSelectBitsTests.cs
+-rwxrwxrwx 1 john john    0 Jul  7 17:42 FileList.txt
+-rwxrwxrwx 1 john john 2453 Mar  1 13:45 FilesystemTests.cs
+-rwxrwxrwx 1 john john   58 Mar  1 13:13 GlobalUsings.cs
+-rwxrwxrwx 1 john john 6988 Jun 14 17:00 MemoryBufferTests.cs
+drwxrwxrwx 1 john john    0 Jul  7 17:37 obj
+-rwxrwxrwx 1 john john 1063 May 24 10:02 OPAS.Common.UnitTests.csproj
+-rwxrwxrwx 1 john john 1998 May  6 11:18 PathCanonicalizerTests.cs
+-rwxrwxrwx 1 john john 3118 Jun 14 15:50 ProtocolBufferReaderTests.cs
+-rwxrwxrwx 1 john john 9012 Jun 14 16:03 ProtocolReaderTests.cs
+-rwxrwxrwx 1 john john 4079 Jun 14 16:03 ProtocolWriterTests.cs
+drwxrwxrwx 1 john john    0 Jul  7 17:39 Resources
+-rwxrwxrwx 1 john john 1907 May  6 11:18 StringBuilderExtensionsTests.cs
+-rwxrwxrwx 1 john john 3684 May  6 11:18 StringEditorTests.cs
+-rwxrwxrwx 1 john john 7239 May  6 11:17 StringSegmentTests.cs
+-rwxrwxrwx 1 john john  802 May 13 13:13 TestingEncryptionKeys.cs

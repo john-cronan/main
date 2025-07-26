@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Inputs>
+  <FileList>
+    <File>File A.csv</File>
+    <File>File B.csv</File>
+    <File>File C.del</File>
+  </FileList>
+</Inputs>

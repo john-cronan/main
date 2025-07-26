@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "JC.CommandLine.IntegrationTests.SimpleParse": {
+      "commandName": "Project",
+      "commandLineArgs": "Import /Files \"File A.csv\" \"File B.xml\" \"File C.json\" /Ids 1024 19004 2090"
+    }
+  }
+}
