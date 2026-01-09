@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace JPC.Common
 {
@@ -14,9 +15,11 @@ namespace JPC.Common
         DateTimeOffset DateTimeOffsetMinValue { get; }
         DateTimeOffset DateTimeOffsetMaxValue { get; }
 
-        void StartTimer(string name);
-        TimeSpan StopTimer(string name);
-        void ResetTimer(string name);
+        object StartTimer();
+        TimeSpan StopTimer(object token);
+        void ResetTimer(object token);
 
+        void Sleep(TimeSpan howLong);
+        Task SleepAsync(TimeSpan howLong);
     }
 }

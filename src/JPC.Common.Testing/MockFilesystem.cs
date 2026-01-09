@@ -8,7 +8,6 @@ namespace JPC.Common.Testing
 {
     public class MockFilesystem : Mock<IFilesystem>
     {
-        private string _currentDirectory;
         private Encoding _textEncoding;
         private readonly IFilesystem _realImplementation;
 
@@ -17,8 +16,9 @@ namespace JPC.Common.Testing
         {
             _textEncoding = Encoding.UTF8;
             _realImplementation = new Filesystem(new EnvironmentWrapper());
-            Setup(m => m.GetCurrentDirectory()).Returns(_currentDirectory);
-            Setup(m => m.SetCurrentDirectory(It.IsAny<string>())).Callback((Action<string>)(arg => _currentDirectory = arg));
+            Setup(m => m.SetCurrentDirectory(It.IsAny<string>())).Callback(
+                (Action<string>)(arg => 
+                    Setup(m => m.GetCurrentDirectory()).Returns(arg)));
             AllContentMethodsThrow(new FileNotFoundException());
         }
 
@@ -57,11 +57,30 @@ namespace JPC.Common.Testing
         public void DirectoryExists(string directoryPath)
             => Setup(m => m.DirectoryExists(directoryPath)).Returns(true);
 
+        public void DirectoryExists(DirectoryInformation directoryInfo)
+            => Setup(m => m.GetDirectoryInformation(directoryInfo.Path)).Returns(directoryInfo);
+
         public void DirectoryDoesNotExist(string directoryPath)
             => Setup(m => m.DirectoryExists(directoryPath)).Returns(false);
 
         public void DirectoryExistsReturnsTrue()
             => Setup(m => m.DirectoryExists(It.IsAny<string>())).Returns(true);
+
+        public void DirectoryHasSubdirectories(string directoryPath,
+            params string[] subDirectoryNames)
+        {
+            DirectoryExists(directoryPath);
+            Setup(m => m.GetSubdirectoryNames(directoryPath)).Returns(
+                subDirectoryNames.Select(s => Path.Combine(directoryPath, s)));
+        }
+
+        public void DirectoryHasSubdirectories(string directoryPath,
+            IEnumerable<string> subDirectoryNames)
+        {
+            DirectoryExists(directoryPath);
+            Setup(m => m.GetSubdirectoryNames(directoryPath)).Returns(
+                subDirectoryNames.Select(s => Path.Combine(directoryPath, s)));
+        }
 
         public void FileDoesNotExist(string filePath)
         {
@@ -73,6 +92,14 @@ namespace JPC.Common.Testing
         {
             Setup(m => m.FileExists(filePath)).Returns(true);
             var directoryPath = Path.GetDirectoryName(filePath);
+            DirectoryExists(directoryPath);
+        }
+
+        public void FileExists(FileInformation fileInformation)
+        {
+            var filePath = Path.Combine(fileInformation.DirectoryPath, fileInformation.Name);
+            FileExists(filePath);
+            Setup(m => m.GetFileInformation(filePath)).Returns(fileInformation);
         }
 
         public void FileHasContent(string filePath, string content)
@@ -202,6 +229,18 @@ namespace JPC.Common.Testing
         public void FileHasJsonContent(string filePath, object content)
             => FileHasContent(filePath, JsonSerializer.Serialize(content));
 
+        public void FileHasStreamContent(string filePath, Stream content)
+        {
+            FileExists(filePath);
+            Setup(m => m.Open(filePath, It.IsAny<FileMode>(), It.IsAny<FileAccess>(),
+                It.IsAny<FileShare>())).Returns(content);
+        }
+
+        public string GetCurrentDirectory()
+        {
+            return Object.GetCurrentDirectory();
+        }
+
         public void GetDirectoryNameThrows(string directoryName, Exception exception)
             => Setup(m => m.GetDirectoryName(directoryName)).Throws(exception);
 
@@ -220,6 +259,11 @@ namespace JPC.Common.Testing
         public void GetDirectoryRootDelegates(IFilesystem delegatesTo)
             => Setup(m => m.GetDirectoryRoot(It.IsAny<string>())).Returns((Func<string, string>)(arg => delegatesTo.GetDirectoryRoot(arg)));
 
+        public void SetCurrentDirectory(string directoryName)
+        {
+            Setup(m => m.GetCurrentDirectory()).Returns(directoryName);
+        }
+
         public void SplitPathDelegates()
             => SplitPathDelegates(_realImplementation);
 
@@ -235,6 +279,17 @@ namespace JPC.Common.Testing
         public void IsPathRootedReturns(string path, bool value)
             => Setup(m => m.IsPathRooted(path)).Returns(value);
             
+        public void OnSetFileInformation(Action<FileInformation> action)
+        {
+            Setup(m => m.SetFileInformation(It.IsAny<FileInformation>())).Callback(action);
+        }
+
+        public void VerifyDirectoryCreated(string directoryPath)
+            => Verify(m => m.CreateDirectory(directoryPath), Times.AtLeastOnce);
+
+        public void VerifyDirectoryNotCreated(string directoryPath)
+            => Verify(m => m.CreateDirectory(directoryPath), Times.Never);
+
         public void VerifyFileCopied(string sourceFileName, string destinationFileName, bool overwrite)
             => Verify(m => m.CopyFile(sourceFileName, destinationFileName, overwrite));
 

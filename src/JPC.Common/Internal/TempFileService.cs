@@ -101,7 +101,7 @@ namespace JPC.Common.Internal
         {
             var q = new Queue<string>();
             q.Enqueue(directoryName);
-            _clock.StartTimer("CleanDir");
+            var cleanDirTimer = _clock.StartTimer();
             while (q.Any())
             {
                 var current = q.Dequeue();
@@ -113,9 +113,9 @@ namespace JPC.Common.Internal
                 {
                     try
                     {
-                        _clock.ResetTimer("CleanDir");
+                        _clock.ResetTimer(cleanDirTimer);
                         _filesystem.DeleteFile(fileNameAndPath);
-                        var elapsed = _clock.StopTimer("CleanDir");
+                        var elapsed = _clock.StopTimer(cleanDirTimer);
                         if (cleanObjectCallback != null)
                         {
                             cleanObjectCallback(new CleanObjectResult(fileNameAndPath, false, true, null, elapsed));
@@ -123,7 +123,7 @@ namespace JPC.Common.Internal
                     }
                     catch (Exception ex)
                     {
-                        var elapsed = _clock.StopTimer("CleanDir");
+                        var elapsed = _clock.StopTimer(cleanDirTimer);
                         if (cleanObjectCallback != null)
                         {
                             cleanObjectCallback(new CleanObjectResult(fileNameAndPath, false, false, ex, elapsed));
@@ -132,9 +132,9 @@ namespace JPC.Common.Internal
                 }
                 try
                 {
-                    _clock.ResetTimer("CleanDir");
+                    _clock.ResetTimer(cleanDirTimer);
                     _filesystem.DeleteDirectory(current, true);
-                    var elapsed = _clock.StopTimer("CleanDir");
+                    var elapsed = _clock.StopTimer(cleanDirTimer);
                     if (cleanObjectCallback != null)
                     {
                         cleanObjectCallback(new CleanObjectResult(current, false, true, null, elapsed));
@@ -142,7 +142,7 @@ namespace JPC.Common.Internal
                 }
                 catch (Exception ex)
                 {
-                    var elapsed = _clock.StopTimer("CleanDir");
+                    var elapsed = _clock.StopTimer(cleanDirTimer);
                     if (cleanObjectCallback != null)
                     {
                         cleanObjectCallback(new CleanObjectResult(current, false, false, ex, elapsed));

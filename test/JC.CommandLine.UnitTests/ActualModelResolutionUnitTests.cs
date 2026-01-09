@@ -245,7 +245,7 @@ namespace JC.CommandLine.UnitTests
         {
             var nodeGroups =
                 new CommandLineBuilder()
-                    .AddExeNode(@"C:\Program Files\OPAS\FormatHD.exe")
+                    .AddExeNode(@"C:\Program Files\FormatHD.exe")
                     .AddArgument("Really")
                     .AddArgument("YesReally")
                     .GetCommandLine();
@@ -269,7 +269,7 @@ namespace JC.CommandLine.UnitTests
         {
             var nodeGroups =
                 new CommandLineBuilder()
-                    .AddExeNode(@"C:\Program Files\OPAS\FormatHD.exe")
+                    .AddExeNode(@"C:\Program Files\FormatHD.exe")
                     .AddArgument("R")
                     .GetCommandLine();
             var arguments = new Argument[]
@@ -294,7 +294,7 @@ namespace JC.CommandLine.UnitTests
         {
             var nodeGroups =
                 new CommandLineBuilder()
-                    .AddExeNode(@"C:\Program Files\OPAS\FormatHD.exe")
+                    .AddExeNode(@"C:\Program Files\FormatHD.exe")
                     .GetCommandLine();
             var arguments = new Argument[]
             {
@@ -316,7 +316,7 @@ namespace JC.CommandLine.UnitTests
         {
             var nodeGroups =
                 new CommandLineBuilder()
-                    .AddExeNode(@"C:\Program Files\OPAS\FormatHD.exe")
+                    .AddExeNode(@"C:\Program Files\FormatHD.exe")
                     .AddUnnamedArgument("Really")
                     .GetCommandLine();
             var arguments = new Argument[] { }.ToImmutableArray();
@@ -335,7 +335,7 @@ namespace JC.CommandLine.UnitTests
         {
             var nodeGroups =
                 new CommandLineBuilder()
-                    .AddExeNode(@"C:\Program Files\OPAS\RecycleDirectory.exe")
+                    .AddExeNode(@"C:\Program Files\RecycleDirectory.exe")
                     .AddArgument("Dir", "DirectoryA", "DirectoryB")
                     .GetCommandLine();
             var arguments = new Argument[] {
@@ -357,7 +357,7 @@ namespace JC.CommandLine.UnitTests
         {
             var nodeGroups =
                 new CommandLineBuilder()
-                    .AddExeNode(@"C:\Program Files\OPAS\RecycleDirectory.exe")
+                    .AddExeNode(@"C:\Program Files\RecycleDirectory.exe")
                     .AddArgument("Dir")
                     .GetCommandLine();
             var arguments = new Argument[] {
@@ -379,7 +379,7 @@ namespace JC.CommandLine.UnitTests
         {
             var nodeGroups =
                 new CommandLineBuilder()
-                    .AddExeNode(@"C:\Program Files\OPAS\RecycleDirectory.exe")
+                    .AddExeNode(@"C:\Program Files\RecycleDirectory.exe")
                     .AddArgument("Recurse", "DirA", "DirB")
                     .GetCommandLine();
             var arguments = new Argument[] {

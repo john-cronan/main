@@ -10,8 +10,10 @@ namespace JPC.Common
         private DateTimeOffset? _lastWriteTime;
         private bool _isEmpty;
         private readonly string _path;
+        private readonly bool _exists;
 
-        public DirectoryInformation(string path, bool isEmpty, DateTimeOffset? created = null, DateTimeOffset? lastAccessed = null,
+        public DirectoryInformation(string path, bool exists, bool isEmpty, 
+            DateTimeOffset? created = null, DateTimeOffset? lastAccessed = null,
             DateTimeOffset? lastWrite = null)
         {
             _path = path;
@@ -19,6 +21,7 @@ namespace JPC.Common
             _created = created;
             _lastAccessed = lastAccessed;
             _lastWriteTime = lastWrite;
+            _exists = exists;
         }
 
         public DateTimeOffset? Created { get => _created; set => _created = value; }
@@ -26,5 +29,6 @@ namespace JPC.Common
         public DateTimeOffset? LastWriteTime { get => _lastWriteTime; set => _lastWriteTime = value; }
         public bool IsEmpty { get => _isEmpty; set => _isEmpty = value; }
         public string Path => _path;
+        public bool Exists => _exists;
     }
 }

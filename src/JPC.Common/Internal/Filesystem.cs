@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -108,7 +107,7 @@ namespace JPC.Common.Internal
             return Directory.Exists(directoryPathExpanded);
         }
 
-        IEnumerable<string> IFilesystem.EnumerateDirectories(string directoryPath, string searchPattern, 
+        IEnumerable<string> IFilesystem.EnumerateDirectories(string directoryPath, string searchPattern,
             EnumerationOptions enumerationOptions)
         {
             var directoryPathExpanded = Expand(directoryPath);
@@ -155,12 +154,21 @@ namespace JPC.Common.Internal
         DirectoryInformation IFilesystem.GetDirectoryInformation(string directoryPath)
         {
             var directoryPathExpanded = Expand(directoryPath);
-            var isEmpty = !Directory.GetFileSystemEntries(directoryPathExpanded).Any();
-            var createdTime = new DateTimeOffset(Directory.GetCreationTimeUtc(directoryPath), TimeSpan.Zero);
-            var lastAccessedTime = new DateTimeOffset(Directory.GetLastAccessTimeUtc(directoryPathExpanded), TimeSpan.Zero);
-            var lastWriteTime = new DateTimeOffset(Directory.GetLastWriteTimeUtc(directoryPathExpanded), TimeSpan.Zero);
-            return new DirectoryInformation(directoryPath, isEmpty, created: createdTime, lastAccessed: lastAccessedTime,
-                lastWrite: lastWriteTime);
+            var directoryInfo = new DirectoryInfo(directoryPathExpanded);
+            if (directoryInfo.Exists)
+            {
+                var isEmpty = !Directory.GetFileSystemEntries(directoryPathExpanded).Any();
+                var createdTime = new DateTimeOffset(Directory.GetCreationTimeUtc(directoryPath), TimeSpan.Zero);
+                var lastAccessedTime = new DateTimeOffset(Directory.GetLastAccessTimeUtc(directoryPathExpanded), TimeSpan.Zero);
+                var lastWriteTime = new DateTimeOffset(Directory.GetLastWriteTimeUtc(directoryPathExpanded), TimeSpan.Zero);
+                return new DirectoryInformation(directoryPath, directoryInfo.Exists, isEmpty,
+                    created: createdTime, lastAccessed: lastAccessedTime,
+                    lastWrite: lastWriteTime);
+            }
+            else
+            {
+                return new DirectoryInformation(directoryPath, false, true);
+            }
         }
 
         string IFilesystem.GetDirectoryName(string directoryPath)
@@ -189,7 +197,9 @@ namespace JPC.Common.Internal
             var created = File.GetCreationTime(pathAndFileNameExpanded);
             var lastAccessed = File.GetLastAccessTime(pathAndFileNameExpanded);
             var lastWrite = File.GetLastWriteTime(pathAndFileNameExpanded);
-            return new FileInformation(path, fileName, exists, attributes, created, lastAccessed, lastWrite);
+            var length = new FileInfo(pathAndFileNameExpanded).Length;
+            return new FileInformation(path, fileName, exists, attributes, created,
+                lastAccessed, lastWrite, length);
         }
 
         string IFilesystem.GetFileName(string pathAndFileName)
@@ -235,6 +245,9 @@ namespace JPC.Common.Internal
             Directory.CreateDirectory(Path.GetDirectoryName(destinationPathAndFileNameExpanded));
             File.Move(sourcePathAndFileNameExpanded, destinationPathAndFileNameExpanded);
         }
+
+        Stream IFilesystem.Open(string filePath, FileMode mode, FileAccess access, FileShare sharing)
+            => new FileStream(filePath, mode, access, sharing);
 
         byte[] IFilesystem.ReadAllBytes(string pathAndFileName)
         {

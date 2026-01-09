@@ -37,18 +37,19 @@ namespace JC.CommandLine
             return outputList;
         }
 
-        public static object ToImmutableArray(this IEnumerable<object> self, Type ofType)
+        public static ImmutableArray<T> ToImmutableArray<T>(this IEnumerable<T> self, Type ofType)
         {
             Guard.IsNotNull(self, nameof(self));
             Guard.IsNotNull(ofType, nameof(ofType));
 
-            var selfAsArray = ToArray(self, ofType);
+            var selfAsArray = self.ToArray();
             var immutableArrayType = typeof(ImmutableArray);
             var toImmutableArrayMethods =
                 from method in immutableArrayType.GetMethods()
                 where method.IsPublic && method.IsStatic
-                && method.Name.Equals("ToImmutableArray", StringComparison.InvariantCulture)
+                && method.Name.Equals("Create", StringComparison.InvariantCulture)
                 && method.GetParameters().Length == 1
+                && method.GetParameters()[0].ParameterType.BaseType == typeof(Array)
                 select method;
             var toImmutableArrayMethod = toImmutableArrayMethods.FirstOrDefault();
             toImmutableArrayMethod = toImmutableArrayMethod.MakeGenericMethod(ofType);
@@ -56,7 +57,7 @@ namespace JC.CommandLine
             {
                 throw new InvalidOperationException("ToImmutableArray method not found");
             }
-            return toImmutableArrayMethod.Invoke(null, new object[] { selfAsArray });
+            return (ImmutableArray<T>)toImmutableArrayMethod.Invoke(null, new object[] { selfAsArray });
         }
     }
 }

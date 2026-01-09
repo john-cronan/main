@@ -12,9 +12,12 @@ namespace JPC.Common
         private readonly bool _exists;
         private DateTimeOffset? _lastAccessed;
         private DateTimeOffset? _lastWrite;
+        private readonly long? _length;
 
-        public FileInformation(string directoryPath, string name, bool exists, FileAttributes? attributes = null,
-            DateTimeOffset? created = null, DateTimeOffset? lastAccessed = null, DateTimeOffset? lastWrite = null)
+        public FileInformation(string directoryPath, string name, bool exists, 
+            FileAttributes? attributes = null, DateTimeOffset? created = null, 
+            DateTimeOffset? lastAccessed = null, DateTimeOffset? lastWrite = null,
+            long? length = null)
         {
             _directoryPath = directoryPath;
             _name = name;
@@ -23,6 +26,7 @@ namespace JPC.Common
             Created = created;
             LastAccessed = lastAccessed;
             LastWrite = lastWrite;
+            _length = length;
         }
 
         public bool IsReadOnly => 
@@ -47,29 +51,6 @@ namespace JPC.Common
         public bool Exists => _exists;
         public DateTimeOffset? LastAccessed { get => _lastAccessed; set => _lastAccessed = value; }
         public DateTimeOffset? LastWrite { get => _lastWrite; set => _lastWrite = value; }
+        public long? Length => _length;
     }
-
-    //public class FileInformation
-    //{
-    //    private readonly DateTimeOffset _created;
-    //    private readonly string _directoryName;
-    //    private readonly string _filePathAndName;
-    //    private readonly bool _exists;
-    //    private readonly bool _isReadOnly;
-
-    //    public FileInformation(FileInfo fileInfo)
-    //    {
-    //        _created = fileInfo.CreationTime;
-    //        _directoryName = fileInfo.DirectoryName;
-    //        _filePathAndName = fileInfo.FullName;
-    //        _exists = fileInfo.Exists;
-    //        _isReadOnly = fileInfo.IsReadOnly;
-    //    }
-
-    //    public DateTimeOffset Created => _created;
-    //    public string DirectoryName => _directoryName;
-    //    public string FilePathAndName => _filePathAndName;
-    //    public bool Exists => _exists;
-    //    public bool IsReadOnly => _isReadOnly;
-    //}
 }

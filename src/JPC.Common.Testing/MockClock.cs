@@ -37,7 +37,7 @@ namespace JPC.Common.Testing
             }
         }
 
-        public void StopTimeReturns(string timerName, TimeSpan value)
-            => Setup(m => m.StopTimer(timerName)).Returns(value);
+        public void StopTimeReturns(object timerToken, TimeSpan value)
+            => Setup(m => m.StopTimer(timerToken)).Returns(value);
     }
 }

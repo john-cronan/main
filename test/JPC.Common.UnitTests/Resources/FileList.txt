@@ -11,7 +11,6 @@ drwxrwxrwx 1 john john    0 Jul  6 13:22 bin
 -rwxrwxrwx 1 john john   58 Mar  1 13:13 GlobalUsings.cs
 -rwxrwxrwx 1 john john 6988 Jun 14 17:00 MemoryBufferTests.cs
 drwxrwxrwx 1 john john    0 Jul  7 17:37 obj
--rwxrwxrwx 1 john john 1063 May 24 10:02 OPAS.Common.UnitTests.csproj
 -rwxrwxrwx 1 john john 1998 May  6 11:18 PathCanonicalizerTests.cs
 -rwxrwxrwx 1 john john 3118 Jun 14 15:50 ProtocolBufferReaderTests.cs
 -rwxrwxrwx 1 john john 9012 Jun 14 16:03 ProtocolReaderTests.cs

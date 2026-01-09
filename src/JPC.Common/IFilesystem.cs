@@ -44,6 +44,7 @@ namespace JPC.Common
         bool IsPathRooted(string path);
         void MoveDirectory(string sourcePath, string destinationPath);
         void MoveFile(string sourcePathAndFileName, string destinationPathAndFileName);
+        Stream Open(string filePath, FileMode mode, FileAccess access, FileShare sharing);
         byte[] ReadAllBytes(string pathAndFileName);
         Task<byte[]> ReadAllBytesAsync(string pathAndFileName);
         string[] ReadAllLines(string pathAndFileName);
