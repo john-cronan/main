@@ -39,5 +39,17 @@ namespace JPC.Common.Testing
 
         public void StopTimeReturns(object timerToken, TimeSpan value)
             => Setup(m => m.StopTimer(timerToken)).Returns(value);
+
+        public void VerifySleepAsyncCalled()
+            => VerifySleepAsyncCalled(1);
+
+        public void VerifySleepAsyncCalled(int times)
+            => Verify(m => m.SleepAsync(It.IsAny<TimeSpan>()), Times.Exactly(times));
+
+        public void VerifySleepAsyncCalled(TimeSpan howLong)
+            => VerifySleepAsyncCalled(howLong, 1);
+
+        public void VerifySleepAsyncCalled(TimeSpan howLong, int times)
+            => Verify(m => m.SleepAsync(howLong), Times.Exactly(times));
     }
 }
