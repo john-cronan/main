@@ -11,10 +11,11 @@ namespace JPC.Common
         private bool _isEmpty;
         private readonly string _path;
         private readonly bool _exists;
+        private readonly FileAttributes? _attributes;
 
         public DirectoryInformation(string path, bool exists, bool isEmpty, 
             DateTimeOffset? created = null, DateTimeOffset? lastAccessed = null,
-            DateTimeOffset? lastWrite = null)
+            DateTimeOffset? lastWrite = null, FileAttributes? attributes = null)
         {
             _path = path;
             _isEmpty = isEmpty;
@@ -22,6 +23,7 @@ namespace JPC.Common
             _lastAccessed = lastAccessed;
             _lastWriteTime = lastWrite;
             _exists = exists;
+            _attributes = attributes;
         }
 
         public DateTimeOffset? Created { get => _created; set => _created = value; }
@@ -30,5 +32,7 @@ namespace JPC.Common
         public bool IsEmpty { get => _isEmpty; set => _isEmpty = value; }
         public string Path => _path;
         public bool Exists => _exists;
+        public FileAttributes? Attributes => _attributes;
+
     }
 }

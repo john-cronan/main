@@ -163,7 +163,7 @@ namespace JPC.Common.Internal
                 var lastWriteTime = new DateTimeOffset(Directory.GetLastWriteTimeUtc(directoryPathExpanded), TimeSpan.Zero);
                 return new DirectoryInformation(directoryPath, directoryInfo.Exists, isEmpty,
                     created: createdTime, lastAccessed: lastAccessedTime,
-                    lastWrite: lastWriteTime);
+                    lastWrite: lastWriteTime, attributes: directoryInfo.Attributes);
             }
             else
             {

@@ -259,6 +259,16 @@ namespace JPC.Common.Testing
         public void GetDirectoryRootDelegates(IFilesystem delegatesTo)
             => Setup(m => m.GetDirectoryRoot(It.IsAny<string>())).Returns((Func<string, string>)(arg => delegatesTo.GetDirectoryRoot(arg)));
 
+        public void GetFileNameDelegates()
+            => GetFileNameDelegates(_realImplementation);
+
+        public void GetFileNameDelegates(IFilesystem delegatesTo)
+            => Setup(m => m.GetFileName(It.IsAny<string>())).Returns((Func<string, string>)(arg => delegatesTo.GetFileName(arg)));
+
+        public void GetFileNameDelegates(Func<string, string> delegatesTo)
+            => Setup(m => m.GetFileName(It.IsAny<string>())).Returns((Func<string, string>)(arg => delegatesTo(arg)));
+
+
         public void SetCurrentDirectory(string directoryName)
         {
             Setup(m => m.GetCurrentDirectory()).Returns(directoryName);
