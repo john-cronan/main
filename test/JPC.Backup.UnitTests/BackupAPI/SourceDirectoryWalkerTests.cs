@@ -108,6 +108,27 @@ namespace JPC.Backup.UnitTests.BackupAPI
             Assert.IsFalse(actual.Any(d => d.Contains("Aruba")));
         }
 
+        [TestMethod]
+        public void Excludes_directory_if_name_has_colon()
+        {
+            //
+            //  Note this seemily-illegal directory name (which cannot be created
+            //  in either Windows Explorer, cmd.exe, or Powershell) is an actual
+            //  directory name from the developer's hard drive.
+            _mockRuntime.Filesystem.DirectoryHasSubdirectories(@"D:\My Documents",
+                "Pictures", "Downloads", "Deploy_UserName 2020-06-18 20:34:27");
+            _mockRuntime.Filesystem.DirectoryHasSubdirectories(
+                @"D:\My Documents\Deploy_UserName 2020-06-18 20:34:27\subdr");
+            _stopRules.Add(new ExcludeIfDirectoryNameHasColon(_mockRuntime));
+
+            var testee = CreateTestee();
+            var actual = testee.Enumerate(@"D:\My Documents",
+                TestBackupOptions.Create());
+
+            Assert.AreEqual(3, actual.Count());
+        }
+
+
         private ISourceDirectoryWalker CreateTestee()
         {
             return new SourceDirectoryWalker(_stopRules, _mockRuntime, 

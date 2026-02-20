@@ -37,7 +37,6 @@ namespace JPC.Backup
             while (directories.TryPop(out var current))
             
             {
-                if (DirectoryNameHasColons(current.Path)) continue;
                 if (AnyStopRuleRejects(current.Path)) continue;
 
                 yield return new SourceDirectory(current.Path, options);
@@ -48,29 +47,6 @@ namespace JPC.Backup
                 //  these options directory-by-directory.
 
                 PushSubdirectories(directories, current, options);
-            }
-        }
-
-        //TODO: May be a platform-specific problem. Reimplement as a stop rule, driven by
-        //an option making it disablable at runtime.
-        private bool DirectoryNameHasColons(string currentDirectoryPath)
-        {
-            var currentDirectoryName = _runtime.Filesystem.GetFileName(currentDirectoryPath);
-            if (currentDirectoryName.Contains(':'))
-            {
-                //
-                //  Inexplicably, this special case does happen. Visual Studio, for
-                //  one, creates directories in the TestResults directory named, 
-                //  for example, "Deploy_{user name} 2020-06-18 20:34:27". So it
-                //  is possible. It's just not possible to enumerate or copy
-                //  those directories.
-                _events.DirectoryFailed(currentDirectoryPath, $"Unable to process directory " +
-                    $"with the name '{currentDirectoryPath}'");
-                return true;
-            }
-            else
-            {
-                return false;
             }
         }
 

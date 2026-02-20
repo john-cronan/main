@@ -70,6 +70,7 @@ namespace JPC.Backup
             {
                 _directoryWalkerBuilder.DirectoryStopExpressions.Add(expression);
             }
+            _directoryWalkerBuilder.DirectoryStopOnColon = options.DirectoryStopOnColon;
             return _directoryWalkerBuilder.BuildSourceDirectoryWalker();
         }
 

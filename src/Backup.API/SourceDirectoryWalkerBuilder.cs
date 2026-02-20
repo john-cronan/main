@@ -6,6 +6,7 @@ namespace JPC.Backup
     public class SourceDirectoryWalkerBuilder : ISourceDirectoryWalkerBuilder
     {
         private IList<MatchExpression> _directoryStopExpressions;
+        private bool _directoryStopOnColon;
         private readonly IRuntime _runtime;
         private readonly IBackupEvents _events;
 
@@ -21,6 +22,7 @@ namespace JPC.Backup
             }
 
             _directoryStopExpressions = new List<MatchExpression>();
+            _directoryStopOnColon = false;
             _runtime = runtime;
             _events = events;
         }
@@ -31,6 +33,12 @@ namespace JPC.Backup
             set => _directoryStopExpressions = value;
         }
 
+        bool ISourceDirectoryWalkerBuilder.DirectoryStopOnColon
+        {
+            get => _directoryStopOnColon;
+            set => _directoryStopOnColon = value;
+        }
+
         ISourceDirectoryWalker ISourceDirectoryWalkerBuilder.BuildSourceDirectoryWalker()
         {
             var stopRules = new List<IExcludeRule>();
@@ -38,6 +46,11 @@ namespace JPC.Backup
             {
                 stopRules.AddRange(_directoryStopExpressions.Select(
                     e => ExpressionExcludeRules.ToExcludeRule(e)));
+            }
+            if (_directoryStopOnColon)
+            {
+                stopRules.Add(new ExcludeIfDirectoryNameHasColon(_runtime));
+
             }
             return new SourceDirectoryWalker(stopRules.ToImmutableArray(),
                 _runtime, _events);

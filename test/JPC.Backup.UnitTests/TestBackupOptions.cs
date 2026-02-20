@@ -9,6 +9,7 @@ namespace JPC.Backup.UnitTests
             FileSize? maxFileSize = null, 
             FileComparisonMethod comparisonMethod = FileComparisonMethod.LastWriteTimeDifferent,
             IEnumerable<MatchExpression> directoryStopExpressions = null,
+            bool directoryStopOnColon = true,
             IEnumerable<MatchExpression> fileExcludeExpressions = null,
             bool resetArchiveBit = true, bool overwriteReadOnlyFiles = true, 
             int? maxDepth = null, int maxRetriesOnFailure = 0, 
@@ -16,6 +17,7 @@ namespace JPC.Backup.UnitTests
         {
             return new BackupOptions(copySystemFiles, maxFileSize, comparisonMethod,
                 directoryStopExpressions ?? ImmutableArray.Create<MatchExpression>(),
+                directoryStopOnColon, 
                 fileExcludeExpressions ?? ImmutableArray.Create<MatchExpression>(),
                 resetArchiveBit, overwriteReadOnlyFiles, maxDepth,
                 maxRetriesOnFailure, retryDelay, whatIf);

@@ -50,6 +50,7 @@ namespace JPC.Backup
             return new BackupOptions(
                 (specFile.CopySystemFiles ?? false), specFile.MaxFileSize,
                 specFile.ComparisonMethod, directoryStopExpressions,
+                specFile.StopWhenDirectoryNameHasColon ?? false,
                 fileExcludeExpressions, (specFile.ResetArchiveBit ?? true),
                 (specFile.OverwriteReadOnlyFiles ?? true),
                 specFile.MaxDepth, (specFile.MaxRetriesOnFailure ?? 1),
@@ -150,7 +151,24 @@ namespace JPC.Backup
         /// will cause a file to be skipped.
         /// </summary>
         public MutableMatchExpression[] ExcludeFilesMatching { get; set; }
-        
+
+        /// <summary>
+        /// Gets / Sets a flag indicating whether the application should ignore
+        /// directories that have colons in their names. If true, files in such
+        /// directories are not copied and subdirectories are not recursed.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Inexplicably, this special case does happen. Visual Studio, for
+        /// one, creates directories in the TestResults directory named, 
+        /// for example, "Deploy_{user name} 2020-06-18 20:34:27". These directories
+        /// lead to failures, and the application cannot copy them anyway (most
+        /// other utilities are unable to as well), so at least on some platforms 
+        /// they must be ignored.
+        /// </para>
+        /// </remarks>
+        public bool? StopWhenDirectoryNameHasColon { get; set; }
+
         /// <summary>
         /// Gets / Sets a collection specifying expressions that, if matched,
         /// will cause the application to not process the current directory

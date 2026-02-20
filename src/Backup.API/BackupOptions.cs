@@ -62,6 +62,7 @@ namespace JPC.Backup
 
         private readonly bool _copySystemFiles;
         private readonly IEnumerable<MatchExpression> _directoryStopExpressions;
+        private readonly bool _directoryStopOnColon;
         private readonly FileSize? _maxFileSize;
         private readonly FileComparisonMethod _comparisonMethod;
         private readonly IEnumerable<MatchExpression> _fileExcludeExpressions;
@@ -75,12 +76,14 @@ namespace JPC.Backup
         public BackupOptions(bool copySystemFiles, FileSize? maxFileSize,
             FileComparisonMethod comparisonMethod, 
             IEnumerable<MatchExpression> directoryStopExpressions,
+            bool directoryStopOnColon,
             IEnumerable<MatchExpression> fileExcludeExpressions,
             bool resetArchiveBit, bool overwriteReadOnlyFiles, int? maxDepth,
             int maxRetriesOnFailure, TimeSpan? retryDelay, bool whatIf)
         {
             _copySystemFiles = copySystemFiles;
             _directoryStopExpressions = directoryStopExpressions ?? new MatchExpression[0];
+            _directoryStopOnColon = directoryStopOnColon;
             _maxFileSize = maxFileSize;
             _comparisonMethod = comparisonMethod;
             _fileExcludeExpressions = fileExcludeExpressions ?? new MatchExpression[0];
@@ -94,6 +97,7 @@ namespace JPC.Backup
 
         public bool CopySystemFiles => _copySystemFiles;
         public IEnumerable<MatchExpression> DirectoryStopExpressions => _directoryStopExpressions;
+        public bool DirectoryStopOnColon => _directoryStopOnColon;
         public int? MaxDepth => _maxDepth;
         public FileSize? MaxFileSize => _maxFileSize;
         public IEnumerable<MatchExpression> FileExcludeExpressions => _fileExcludeExpressions;
@@ -119,7 +123,9 @@ namespace JPC.Backup
             if (_copySystemFiles != obj._copySystemFiles) return false;
             if (_comparisonMethod != obj._comparisonMethod) return false;
             if (!_directoryStopExpressions.SequenceEqual(obj._directoryStopExpressions)) return false;
+            if (_directoryStopOnColon != obj._directoryStopOnColon) return false;
             if (!_fileExcludeExpressions.SequenceEqual(obj._fileExcludeExpressions)) return false;
+            if (_maxDepth != obj._maxDepth) return false;   
             if (_maxFileSize != obj._maxFileSize) return false;
             if (_maxRetriesOnFailure != obj._maxRetriesOnFailure) return false;
             if (_overwriteReadOnlyFiles != obj._overwriteReadOnlyFiles) return false;
@@ -137,10 +143,13 @@ namespace JPC.Backup
             {
                 rv ^= d.GetHashCode();
             }
+            rv ^= _directoryStopOnColon.GetHashCode();
             foreach (var f in _fileExcludeExpressions)
             {
                 rv ^= f.GetHashCode();
             }
+            rv ^= _maxFileSize.GetHashCode();
+            rv ^= _maxDepth.GetHashCode();
             rv ^= _maxRetriesOnFailure.GetHashCode();
             rv ^= _overwriteReadOnlyFiles.GetHashCode();
             rv ^= _retryDelay.GetHashCode();
