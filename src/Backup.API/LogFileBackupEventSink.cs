@@ -201,7 +201,7 @@ namespace JPC.Backup
                 key => new DirectoryStatus(key));
             var fileName = _runtime.Filesystem.GetFileName(sourcePath);
             dirStatus.FilesCopied.Add(fileName);
-            dirStatus.BytesCopied += BytesCopied;
+            dirStatus.BytesCopied += (bytesCopied ?? 0);
         }
 
         protected override void FileExcluded(string sourcePath, string destinationPath, IEnumerable<IExcludeRule> excludingRules)
