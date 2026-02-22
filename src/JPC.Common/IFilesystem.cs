@@ -36,6 +36,7 @@ namespace JPC.Common
         DirectoryInformation GetDirectoryInformation(string directoryPath);
         string GetDirectoryName(string directoryPath);
         string GetDirectoryRoot(string directoryPath);
+        IEnumerable<DriveInformation> GetDrives();
         FileInformation GetFileInformation(string pathAndFileName);
         string GetFileName(string pathAndFileName);
         IEnumerable<string> GetFileNames(string directoryPath);

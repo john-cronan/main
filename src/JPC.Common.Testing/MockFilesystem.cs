@@ -259,6 +259,15 @@ namespace JPC.Common.Testing
         public void GetDirectoryRootDelegates(IFilesystem delegatesTo)
             => Setup(m => m.GetDirectoryRoot(It.IsAny<string>())).Returns((Func<string, string>)(arg => delegatesTo.GetDirectoryRoot(arg)));
 
+        public void GetDrivesDelegates()
+            => Setup(m => m.GetDrives()).Returns(DriveInfo.GetDrives().Select(d => new DriveInformation(d)));
+
+        public void GetDrivesReturns(IEnumerable<DriveInformation> drives)
+            => Setup(m => m.GetDrives()).Returns(drives);
+
+        public void GetDrivesThrows(Exception exception)
+            => Setup(m => m.GetDrives()).Throws(exception);
+
         public void GetFileNameDelegates()
             => GetFileNameDelegates(_realImplementation);
 
