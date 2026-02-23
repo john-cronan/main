@@ -1,4 +1,6 @@
-﻿namespace JPC.Backup
+﻿using System.Collections.Immutable;
+
+namespace JPC.Backup
 {
     /// <summary>
     /// An implementation of <see cref="IBackupEvents"/> that broadcasts
@@ -6,16 +8,16 @@
     /// </summary>
     public class AggregatingBackupEventSink : IBackupEvents
     {
-        private readonly IEnumerable<IBackupEvents> _handlers;
+        private ImmutableArray<IBackupEvents> _handlers;
 
-        public AggregatingBackupEventSink(IEnumerable<IBackupEvents> handlers)
+        public AggregatingBackupEventSink()
         {
-            if (handlers == null)
-            {
-                throw new ArgumentNullException(nameof(handlers));
-            }
+            _handlers = ImmutableArray<IBackupEvents>.Empty;
+        }
 
-            _handlers = handlers;
+        public void Add(IBackupEvents sink)
+        {
+            _handlers = _handlers.Add(sink);
         }
 
         void IBackupEvents.AttemptingFile(string sourceFilePath)

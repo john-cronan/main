@@ -183,6 +183,9 @@ namespace JPC.Common.Internal
             return Directory.GetDirectoryRoot(directoryPathExpanded);
         }
 
+        IEnumerable<DriveInformation> IFilesystem.GetDrives()
+            => DriveInfo.GetDrives().Select(d => new DriveInformation(d));
+
         FileInformation IFilesystem.GetFileInformation(string pathAndFileName)
         {
             var pathAndFileNameExpanded = Expand(pathAndFileName);
