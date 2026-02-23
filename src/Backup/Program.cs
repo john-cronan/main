@@ -7,131 +7,47 @@ namespace JPC.Backup
     {
         public static async Task Main()
         {
-            var specFile = FindSpecificationFile();
-            var serviceContainer = ServiceContainer.Build(specFile);
-            var root = serviceContainer.GetService<BackupProcessor>();
-            await root.DoBackupAsync(specFile.SourcePath, specFile.DestinationPath,
-                SpecificationFile.ToBackupOptions(specFile));
+            var serviceContainer = ServiceContainer.Build();
+            var specFile = FindSpecificationFile(serviceContainer);
+            InitializeEventSinks(serviceContainer, specFile);
+            await InvokeBackupProcessor(serviceContainer, specFile);
         }
 
-        private static SpecificationFile FindSpecificationFile()
+        private static Task InvokeBackupProcessor(IServiceProvider serviceContainer,
+            SpecificationFile specFile)
         {
-            var services = new ServiceCollection();
-            services.AddRuntimeWrappers();
-            services.AddTransient<SpecificationFileFinder>();
-            var tempContainer = services.BuildServiceProvider();
-            var finder = tempContainer.GetService<SpecificationFileFinder>();
+            var options = SpecificationFileHelper.ToBackupOptions(specFile);
+            var runtime = serviceContainer.GetService<IRuntime>();
+            var sourcePath = SpecificationFileHelper.GetSourcePath(specFile, runtime);
+            var destinationPath = SpecificationFileHelper.GetDestinationPath(specFile, runtime);
+            var root = serviceContainer.GetService<BackupProcessor>();
+            return root.DoBackupAsync(sourcePath, destinationPath, options);
+        }
+
+        private static void InitializeEventSinks(IServiceProvider serviceContainer,
+            SpecificationFile specFile)
+        {
+            var aggregator = serviceContainer.GetService<IBackupEvents>() as AggregatingBackupEventSink;
+            var runtime = serviceContainer.GetService<IRuntime>();
+            Startup.InitializeEventSinks(aggregator, specFile, runtime);
+        }
+
+        private static SpecificationFile FindSpecificationFile(IServiceProvider serviceContainer)
+        {
+            var finder = serviceContainer.GetService<SpecificationFileFinder>();
             finder.Find();
-            if (string.IsNullOrWhiteSpace(finder.FoundFile.SourcePath))
+            if (string.IsNullOrWhiteSpace(finder.FoundFile.SourcePath)
+                && string.IsNullOrWhiteSpace(finder.FoundFile.SourceVolume))
             {
-                var filesystem = tempContainer.GetService<IFilesystem>();
+                var filesystem = serviceContainer.GetService<IFilesystem>();
                 finder.FoundFile.SourcePath = filesystem.GetDirectoryName(finder.FoundFilePath);
             }
-            ValidateSpecificationFile(tempContainer.GetService<IRuntime>(), finder.FoundFile);
-            return finder.FoundFile;
-        }
-
-        private static void ValidateSpecificationFile(IRuntime runtime,
-            SpecificationFile specificationFile)
-        {
-            var errors = 0;
-
-            //
-            //  The source directory has to exist.
-            if (string.IsNullOrWhiteSpace(specificationFile.SourcePath))
-            {
-                runtime.Console.WriteLine("Error: Source directory not specified");
-                errors++;
-            }
-            else
-            {
-                var sourceDirectoryInfo = runtime.Filesystem.GetDirectoryInformation(specificationFile.SourcePath);
-                if (sourceDirectoryInfo == null || !sourceDirectoryInfo.Exists)
-                {
-                    runtime.Console.WriteLine($"Error: Source directory {specificationFile.SourcePath} not found");
-                    errors++;
-                }
-            }
-
-            //
-            //  The destination directory must at least be on a root that
-            //  exists (it won't if, for example, it's on a device that's
-            //  not currently mounted).
-            if (string.IsNullOrWhiteSpace(specificationFile.DestinationPath))
-            {
-                runtime.Console.WriteLine("Error: Destination directory not specified");
-                errors++;
-            }
-            else
-            {
-                var rootDirectory = runtime.Filesystem.GetDirectoryRoot(specificationFile.DestinationPath);
-                var rootDirectoryInfo = runtime.Filesystem.GetDirectoryInformation(rootDirectory);
-                if (!rootDirectoryInfo.Exists)
-                {
-
-                    runtime.Console.WriteLine($"Error: Destination {specificationFile.DestinationPath} is on " +
-                        $"a volume that was not found or is not accessible");
-                    errors++;
-                }
-            }
-
-            if (specificationFile.MaxFileSize != null
-                && specificationFile.MaxFileSize <= FileSize.Zero)
-            {
-                runtime.Console.WriteLine("Error: Max File Size, if specified, must " +
-                    "be greater than zero");
-                errors++;
-            }
-
-            if (!Enum.IsDefined(specificationFile.ComparisonMethod))
-            {
-                runtime.Console.WriteLine($"Error: {specificationFile.ComparisonMethod} is " +
-                    $"not a valid file comparison method");
-                errors++;
-            }
-
-            if (specificationFile.LogFile != null
-                && !Enum.IsDefined(specificationFile.LogFile.OutputLevel))
-            {
-                runtime.Console.WriteLine($"Error: {specificationFile.LogFile.OutputLevel} " +
-                    $"is not a valid output level");
-                errors++;
-            }
-
-            if (specificationFile.MaxDepth != null && specificationFile.MaxDepth < 0)
-            {
-                runtime.Console.WriteLine("Error: Max Depth, if specified, must be zero " +
-                    "or greater");
-                errors++;
-            }
-
-            if (specificationFile.MaxRetriesOnFailure != null
-                && specificationFile.MaxRetriesOnFailure < 0)
-            {
-                runtime.Console.WriteLine("Error: Max Retries on Failure, if specified, " +
-                    "must be greater than zero");
-                errors++;
-            }
-
-            if (specificationFile.OutputLevel != null 
-                && !Enum.IsDefined(specificationFile.OutputLevel.Value))
-            {
-                runtime.Console.WriteLine($"Error: {specificationFile.OutputLevel} is " +
-                    $"not a valid output level");
-                errors++;
-            }
-
-            if (specificationFile.RetryDelay != null
-                && specificationFile.RetryDelay < TimeSpan.Zero)
-            {
-                runtime.Console.WriteLine("Error: Retry Delay, if specified, must " +
-                    "be greater than or equal to zero");
-                errors++;
-            }
-            if (errors > 0)
+            var runtime = serviceContainer.GetService<IRuntime>();
+            if (!SpecificationFileHelper.Validate(finder.FoundFile, runtime))
             {
                 runtime.Environment.Exit(ExitCodes.ConfigurationError);
             }
+            return finder.FoundFile;
         }
     }
 }

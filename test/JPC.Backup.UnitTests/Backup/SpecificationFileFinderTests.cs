@@ -19,7 +19,7 @@ namespace JPC.Backup.UnitTests.Backup
                     new MutableMatchExpression { Expression = "zzz", MatchType = MatchType.RegEx }
                 }
             };
-            var specFileJson = SpecificationFile.ToJson(expectedSpecFile);
+            var specFileJson = SpecificationFileHelper.ToJson(expectedSpecFile);
             var mockRuntime = new MockRuntime();
             mockRuntime.Environment.CommandLineArgs = new string[]
             {
@@ -55,7 +55,7 @@ namespace JPC.Backup.UnitTests.Backup
                     new MutableMatchExpression { Expression = "zzz", MatchType = MatchType.RegEx }
                 }
             };
-            var specFileJson = SpecificationFile.ToJson(expectedSpecFile);
+            var specFileJson = SpecificationFileHelper.ToJson(expectedSpecFile);
             var mockRuntime = new MockRuntime();
             mockRuntime.Environment.CommandLineArgs = new string[]
             {
@@ -99,8 +99,8 @@ namespace JPC.Backup.UnitTests.Backup
                 "Backup.exe",
                 "Backup-OnCommandLine.json"
             };
-            mockRuntime.Filesystem.FileHasContent("Backup-OnCommandLine.json", 
-                SpecificationFile.ToJson(specFileOnCommandLine));
+            mockRuntime.Filesystem.FileHasContent("Backup-OnCommandLine.json",
+                SpecificationFileHelper.ToJson(specFileOnCommandLine));
 
             var specFileInCurrentDirectory = new SpecificationFile
             {
@@ -114,7 +114,7 @@ namespace JPC.Backup.UnitTests.Backup
                 }
             };
             mockRuntime.Filesystem.SetCurrentDirectory("D:\\");
-            mockRuntime.Filesystem.FileHasContent("D:\\Backup.json", SpecificationFile.ToJson(specFileInCurrentDirectory));
+            mockRuntime.Filesystem.FileHasContent("D:\\Backup.json", SpecificationFileHelper.ToJson(specFileInCurrentDirectory));
 
             var testee = new SpecificationFileFinder(mockRuntime);
             testee.Find();

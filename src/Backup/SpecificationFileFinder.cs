@@ -55,7 +55,7 @@ namespace JPC.Backup
                 if (_runtime.Filesystem.FileExists(specFilePath))
                 {
                     var content = _runtime.Filesystem.ReadAllText(specFilePath);
-                    var specFile = SpecificationFile.ParseJson(content);
+                    var specFile = SpecificationFileHelper.ParseJson(content);
                     return (specFile, specFilePath);
                 }
                 else
@@ -74,7 +74,7 @@ namespace JPC.Backup
             if (_runtime.Filesystem.FileExists(specFilePath))
             {
                 var content = _runtime.Filesystem.ReadAllText(specFilePath);
-                var specFile = SpecificationFile.ParseJson(content);
+                var specFile = SpecificationFileHelper.ParseJson(content);
                 return (specFile, specFilePath);
             }
             return (null, null);

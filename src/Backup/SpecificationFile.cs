@@ -1,8 +1,4 @@
 ﻿using JPC.Common;
-using JPC.Common.JsonConverters;
-using System.Collections.Immutable;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace JPC.Backup
 {
@@ -23,60 +19,38 @@ namespace JPC.Backup
 
     internal class SpecificationFile
     {
-        public static SpecificationFile ParseJson(string json)
-        {
-            var options = new JsonSerializerOptions();
-            options.Converters.Add(new JsonStringEnumConverter());
-            options.Converters.Add(new FileSizeJsonConverter());
-            options.PropertyNameCaseInsensitive = true;
-            var instance = JsonSerializer.Deserialize<SpecificationFile>(json, options);
-            return instance;
-        }
-
-        public static BackupOptions ToBackupOptions(SpecificationFile specFile)
-        {
-            var directoryStopExpressions =
-                specFile.StopWhenDirectoryMatches == null
-                    ? ImmutableArray.Create<MatchExpression>()
-                    : specFile.StopWhenDirectoryMatches
-                        .Select(s => new MatchExpression(s.Expression, s.MatchType))
-                        .ToImmutableArray();
-            var fileExcludeExpressions =
-                specFile.ExcludeFilesMatching == null
-                    ? ImmutableArray.Create<MatchExpression>()
-                    : specFile.ExcludeFilesMatching
-                        .Select(e => new MatchExpression(e.Expression, e.MatchType))
-                        .ToImmutableArray();
-            return new BackupOptions(
-                (specFile.CopySystemFiles ?? false), specFile.MaxFileSize,
-                specFile.ComparisonMethod, directoryStopExpressions,
-                specFile.StopWhenDirectoryNameHasColon ?? false,
-                fileExcludeExpressions, (specFile.ResetArchiveBit ?? true),
-                (specFile.OverwriteReadOnlyFiles ?? true),
-                specFile.MaxDepth, (specFile.MaxRetriesOnFailure ?? 1),
-                specFile.RetryDelay, (specFile.WhatIf ?? false));
-        }
-
-        public static string ToJson(SpecificationFile specFile)
-        {
-            var options = new JsonSerializerOptions();
-            options.Converters.Add(new FileSizeJsonConverter());
-            return JsonSerializer.Serialize(specFile, options);
-        }
-
         /// <summary>
-        /// Gets / Sets the path of the files being backed up. If not 
-        /// provided, the directory containing the specification file is
-        /// used. The <see cref="SourcePath"/> must exist.
+        /// Gets / Sets the path of the files being backed up. If neither
+        /// this property nor <see cref="SourceVolume"/> is specified,
+        /// the directory containing the specification file is used. Both
+        /// cannot be specified. The directory identified by this property 
+        /// or <see cref="SourceVolume"/> must exist.
         /// </summary>
         public string SourcePath { get; set; }
 
         /// <summary>
+        /// Gets / Sets the label of a volume whose root directory will be
+        /// backed up.If neither this property nor <see cref="SourcePath"/> is
+        /// specified, the directory containing the specification file is used. 
+        /// Both cannot be specified.  The  directory identified by this property 
+        /// or <see cref="SourcePath"/> must exist.
+        /// </summary>
+        public string SourceVolume { get; set; }
+
+        /// <summary>
         /// Gets / Sets the path that backed up files will be copied to. This
         /// directory needn't exist (it will be created if it doesn't), but
-        /// it must, of course, reside on a root that exists.
+        /// it must, of course, reside on a root that exists. Either this
+        /// value or <see cref="DestinationVolume"/> is required.
         /// </summary>
         public string DestinationPath { get; set; }
+
+        /// <summary>
+        /// Gets / Sets the label of a volume whose root directory backed up files
+        /// will be copied to. Either this value or <see cref="DestinationPath"/>
+        /// is required.
+        /// </summary>
+        public string DestinationVolume { get; set; }
 
         /// <summary>
         /// Gets / Sets a maximum size for files backed up. If set, files larger

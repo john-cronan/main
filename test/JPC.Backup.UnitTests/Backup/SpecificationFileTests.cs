@@ -13,11 +13,11 @@ namespace JPC.Backup.UnitTests.Backup
             testee.DestinationPath = @"D:\Backup\C\Users\You\Documents";
             testee.MaxFileSize = FileSize.From(10, FileSizeUnits.GB);
 
-            var options = SpecificationFile.ToBackupOptions(testee);
+            var options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(testee.MaxFileSize, options.MaxFileSize);
 
             testee.MaxFileSize = null;
-            options = SpecificationFile.ToBackupOptions(testee);
+            options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(testee.MaxFileSize, options.MaxFileSize);
         }
 
@@ -29,15 +29,15 @@ namespace JPC.Backup.UnitTests.Backup
             testee.DestinationPath = @"D:\Backup\C\Users\You\Documents";
             testee.CopySystemFiles = true;
 
-            var options = SpecificationFile.ToBackupOptions(testee);
+            var options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.IsTrue(options.CopySystemFiles);
 
             testee.CopySystemFiles = false;
-            options = SpecificationFile.ToBackupOptions(testee);
+            options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.IsFalse(options.CopySystemFiles);
 
             testee.CopySystemFiles = null;
-            options = SpecificationFile.ToBackupOptions(testee);
+            options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.IsFalse(options.CopySystemFiles);
         }
 
@@ -49,11 +49,11 @@ namespace JPC.Backup.UnitTests.Backup
             testee.DestinationPath = @"D:\Backup\C\Users\You\Documents";
             testee.ComparisonMethod = FileComparisonMethod.LastWriteTimeNewer;
 
-            var options = SpecificationFile.ToBackupOptions(testee);
+            var options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(testee.ComparisonMethod, options.ComparisonMethod);
 
             testee.ComparisonMethod = FileComparisonMethod.SizeDifferent;
-            options = SpecificationFile.ToBackupOptions(testee);
+            options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(testee.ComparisonMethod, options.ComparisonMethod);
         }
 
@@ -65,15 +65,15 @@ namespace JPC.Backup.UnitTests.Backup
             testee.DestinationPath = @"D:\Backup\C\Users\You\Documents";
             testee.OverwriteReadOnlyFiles = true;
 
-            var options = SpecificationFile.ToBackupOptions(testee);
+            var options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(testee.OverwriteReadOnlyFiles, options.OverwriteReadOnlyFiles);
 
             testee.OverwriteReadOnlyFiles = false;
-            options = SpecificationFile.ToBackupOptions(testee);
+            options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(testee.OverwriteReadOnlyFiles, options.OverwriteReadOnlyFiles);
 
             testee.OverwriteReadOnlyFiles = null;
-            options = SpecificationFile.ToBackupOptions(testee);
+            options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.IsTrue(options.OverwriteReadOnlyFiles);
         }
 
@@ -85,11 +85,11 @@ namespace JPC.Backup.UnitTests.Backup
             testee.DestinationPath = @"D:\Backup\C\Users\You\Documents";
             testee.MaxDepth = 4;
 
-            var options = SpecificationFile.ToBackupOptions(testee);
+            var options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(testee.MaxDepth, options.MaxDepth);
 
             testee.MaxDepth = null;
-            options = SpecificationFile.ToBackupOptions(testee);
+            options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.IsNull(options.MaxDepth);
         }
 
@@ -101,11 +101,11 @@ namespace JPC.Backup.UnitTests.Backup
             testee.DestinationPath = @"D:\Backup\C\Users\You\Documents";
             testee.MaxRetriesOnFailure = 2;
 
-            var options = SpecificationFile.ToBackupOptions(testee);
+            var options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(testee.MaxRetriesOnFailure, options.MaxRetriesOnFailure);
 
             testee.MaxRetriesOnFailure = null;
-            options = SpecificationFile.ToBackupOptions(testee);
+            options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(1, options.MaxRetriesOnFailure);
         }
 
@@ -117,11 +117,11 @@ namespace JPC.Backup.UnitTests.Backup
             testee.DestinationPath = @"D:\Backup\C\Users\You\Documents";
             testee.ResetArchiveBit = true;
 
-            var options = SpecificationFile.ToBackupOptions(testee);
+            var options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(testee.ResetArchiveBit, options.ResetArchiveBit);
 
             testee.ResetArchiveBit = null;
-            options = SpecificationFile.ToBackupOptions(testee);
+            options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.IsTrue(options.ResetArchiveBit);
         }
 
@@ -133,11 +133,11 @@ namespace JPC.Backup.UnitTests.Backup
             testee.DestinationPath = @"D:\Backup\C\Users\You\Documents";
             testee.RetryDelay = TimeSpan.FromSeconds(2);
 
-            var options = SpecificationFile.ToBackupOptions(testee);
+            var options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(testee.RetryDelay, options.RetryDelay);
 
             testee.RetryDelay = null;
-            options = SpecificationFile.ToBackupOptions(testee);
+            options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.IsNull(options.RetryDelay);
         }
 
@@ -149,11 +149,11 @@ namespace JPC.Backup.UnitTests.Backup
             testee.DestinationPath = @"D:\Backup\C\Users\You\Documents";
             testee.WhatIf = true;
 
-            var options = SpecificationFile.ToBackupOptions(testee);
+            var options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(testee.WhatIf, options.WhatIf);
 
             testee.WhatIf = null;
-            options = SpecificationFile.ToBackupOptions(testee);
+            options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.IsFalse(options.WhatIf);
         }
 
@@ -169,7 +169,7 @@ namespace JPC.Backup.UnitTests.Backup
                 new MutableMatchExpression { Expression = "\"(?i)\\\\.mpeg\"", MatchType = MatchType.RegEx},
             };
 
-            var options = SpecificationFile.ToBackupOptions(testee);
+            var options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(testee.ExcludeFilesMatching.Count(), options.FileExcludeExpressions.Count());
             var matching = testee.ExcludeFilesMatching.Join(
                     options.FileExcludeExpressions,
@@ -179,11 +179,11 @@ namespace JPC.Backup.UnitTests.Backup
             Assert.AreEqual(testee.ExcludeFilesMatching.Count(), matching.Count());
 
             testee.ExcludeFilesMatching = new MutableMatchExpression[0];
-            options = SpecificationFile.ToBackupOptions(testee);
+            options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(0, options.FileExcludeExpressions.Count());
 
             testee.ExcludeFilesMatching = null;
-            options = SpecificationFile.ToBackupOptions(testee);
+            options = SpecificationFileHelper.ToBackupOptions(testee);
             Assert.AreEqual(0, options.FileExcludeExpressions.Count());
         }
 
@@ -199,7 +199,7 @@ namespace JPC.Backup.UnitTests.Backup
                 new MutableMatchExpression { Expression = @"\\System Volume Information", MatchType = MatchType.RegEx },
             };
 
-            var options = SpecificationFile.ToBackupOptions(testee);
+            var options = SpecificationFileHelper.ToBackupOptions(testee);
             var matching = testee.StopWhenDirectoryMatches.Join(
                     options.DirectoryStopExpressions,
                     m => new { m.Expression, m.MatchType },
