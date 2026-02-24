@@ -102,7 +102,16 @@ namespace JC.CommandLine
         {
             try
             {
-                var collection = convertedValues.ToImmutableArray(targetType.ScalarType);
+                var asArray = convertedValues.ToArray(targetType.ScalarType);
+                var method = 
+                    from m in typeof(ImmutableArray).GetMethods(BindingFlags.InvokeMethod
+                        | BindingFlags.Public | BindingFlags.Static)
+                    where m.Name == "Create"
+                    && m.GetParameters().Length == 1
+                    && typeof(Array).IsAssignableFrom(m.GetParameters()[0].ParameterType)
+                    select m.MakeGenericMethod(targetType.ScalarType);
+                var createMethod = method.FirstOrDefault();
+                var collection = createMethod.Invoke(null, new object[] { asArray });
                 propertyInfo.SetValue(instance, collection);
                 return;
             }
