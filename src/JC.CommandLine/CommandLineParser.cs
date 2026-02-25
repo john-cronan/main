@@ -56,7 +56,7 @@ namespace JC.CommandLine
             var nodeGroups = CommandLineNodeGroup.Parse(nodes).ToImmutableArray();
             nodeGroups = ParsingFixups.SplitExeNode(nodeGroups);
             nodeGroups = ParsingFixups.SplitEndingUnnamedValues(nodeGroups,
-                _model.Arguments, _model.StringComparisons);
+                _model.Arguments, _model.StringComparisons, _model.NameMatching);
             nodeGroups = ParsingFixups.ConsolidateDuplicateArguments(
                 nodeGroups, _model.Arguments, _model.StringComparisons, _model.NameMatching);
             var resolutions = new ActualModelResolution(nodeGroups, _model, _filesystem);

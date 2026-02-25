@@ -95,13 +95,53 @@ namespace JC.CommandLine.UnitTests
                     ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
             var outputNodes = ParsingFixups.SplitEndingUnnamedValues(inputNodes,
-                model, StringComparison.InvariantCultureIgnoreCase);
+                model, StringComparison.InvariantCultureIgnoreCase, NameMatchingOptions.Exact);
             Assert.AreNotEqual(inputNodes.Length, outputNodes.Length);
             Assert.AreEqual(inputNodes[0].KeyNode.NodeType, outputNodes[0].KeyNode.NodeType);
             Assert.AreEqual(inputNodes[0].ValueNodes.Length, inputNodes[0].ValueNodes.Length);
             Assert.AreEqual(0, outputNodes[0].ValueNodes.Length);
             Assert.AreEqual(CommandLineNodeTypes.ArgumentName, outputNodes[1].KeyNode.NodeType);
             Assert.AreEqual("recurse", outputNodes[1].KeyNode.Text);
+            Assert.AreEqual(0, outputNodes[1].ValueNodes.Length);
+            Assert.AreEqual(CommandLineNodeTypes.ArgumentName, outputNodes[2].KeyNode.NodeType);
+            Assert.AreEqual(2, outputNodes[2].ValueNodes.Length);
+            Assert.IsTrue(inputNodes[1].ValueNodes.SequenceEqual(outputNodes[2].ValueNodes));
+        }
+
+        [TestMethod]
+        public void Ending_values_are_changed_to_unnamed_node_Zero_multiplicity_stem_matching()
+        {
+            var inputNodes = new CommandLineNodeGroup[]
+            {
+                new CommandLineNodeGroup
+                (
+                    new CommandLineNode(CommandLineNodeTypes.Exe, "program.exe"),
+                    CommandLineNode.EmptyArray
+                ),
+                new CommandLineNodeGroup
+                (
+                    new CommandLineNode(CommandLineNodeTypes.ArgumentName, "rec"),
+                    new CommandLineNode[]
+                    {
+                        new CommandLineNode(CommandLineNodeTypes.Value, "DirectoryA"),
+                        new CommandLineNode(CommandLineNodeTypes.Value, "DirectoryB")
+                    }
+                )
+            }.ToImmutableArray();
+            var model = new Argument[]
+            {
+                new Argument(new string[] {"recurse" }.ToImmutableArray(),
+                    ArgumentMultiplicity.Zero, false)
+            }.ToImmutableArray();
+            var outputNodes = ParsingFixups.SplitEndingUnnamedValues(inputNodes,
+                model, StringComparison.InvariantCultureIgnoreCase, 
+                NameMatchingOptions.Stem);
+            Assert.AreNotEqual(inputNodes.Length, outputNodes.Length);
+            Assert.AreEqual(inputNodes[0].KeyNode.NodeType, outputNodes[0].KeyNode.NodeType);
+            Assert.AreEqual(inputNodes[0].ValueNodes.Length, inputNodes[0].ValueNodes.Length);
+            Assert.AreEqual(0, outputNodes[0].ValueNodes.Length);
+            Assert.AreEqual(CommandLineNodeTypes.ArgumentName, outputNodes[1].KeyNode.NodeType);
+            Assert.AreEqual("rec", outputNodes[1].KeyNode.Text);
             Assert.AreEqual(0, outputNodes[1].ValueNodes.Length);
             Assert.AreEqual(CommandLineNodeTypes.ArgumentName, outputNodes[2].KeyNode.NodeType);
             Assert.AreEqual(2, outputNodes[2].ValueNodes.Length);
@@ -134,7 +174,8 @@ namespace JC.CommandLine.UnitTests
                         ArgumentMultiplicity.One, false)
             }.ToImmutableArray();
             var outputNodes = ParsingFixups.SplitEndingUnnamedValues(inputNodes,
-                arguments, StringComparison.InvariantCultureIgnoreCase);
+                arguments, StringComparison.InvariantCultureIgnoreCase, 
+                NameMatchingOptions.Exact);
             Assert.AreNotEqual(inputNodes.Length, outputNodes.Length);
             Assert.AreEqual(inputNodes[0].KeyNode.NodeType, outputNodes[0].KeyNode.NodeType);
             Assert.AreEqual(inputNodes[0].ValueNodes.Length, inputNodes[0].ValueNodes.Length);
@@ -383,7 +424,8 @@ namespace JC.CommandLine.UnitTests
             {
                 new Argument("File", ArgumentMultiplicity.One, true)
             }.ToImmutableArray();
-            var output = ParsingFixups.SplitEndingUnnamedValues(input, arguments, StringComparison.InvariantCultureIgnoreCase);
+            var output = ParsingFixups.SplitEndingUnnamedValues(input, arguments, 
+                StringComparison.InvariantCultureIgnoreCase, NameMatchingOptions.Exact);
             var areEqual = CommandLineNodeCompare.Equals(input, output, StringComparison.InvariantCultureIgnoreCase);
             Assert.IsTrue(areEqual);
 
@@ -414,7 +456,8 @@ namespace JC.CommandLine.UnitTests
                         multiplicity, false)
             }.ToImmutableArray();
             var outputNodes = ParsingFixups.SplitEndingUnnamedValues(inputNodes,
-                arguments, StringComparison.InvariantCultureIgnoreCase);
+                arguments, StringComparison.InvariantCultureIgnoreCase, 
+                NameMatchingOptions.Exact);
             Assert.AreEqual(inputNodes, outputNodes);
         }
 

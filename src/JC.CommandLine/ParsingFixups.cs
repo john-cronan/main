@@ -35,7 +35,9 @@ namespace JC.CommandLine
 
         public static ImmutableArray<CommandLineNodeGroup> SplitEndingUnnamedValues(
             ImmutableArray<CommandLineNodeGroup> nodeGroups,
-            ImmutableArray<Argument> arguments, StringComparison stringComparisons)
+            ImmutableArray<Argument> arguments, StringComparison stringComparisons,
+            NameMatchingOptions nameMatchingOption)
+
         {
             if (!nodeGroups.Any())
             {
@@ -53,7 +55,8 @@ namespace JC.CommandLine
             }
             var matchingArguments =
                 from argument in arguments
-                where argument.Names.Any(n => n.Equals(lastNodeGroup.KeyNode.Text, stringComparisons))
+                where NameMatching.IsMatch(lastNodeGroup.KeyNode.Text, argument.Names,
+                    nameMatchingOption, stringComparisons)
                 select argument;
 
             var matchingArgument = matchingArguments.SingleOrDefault();
