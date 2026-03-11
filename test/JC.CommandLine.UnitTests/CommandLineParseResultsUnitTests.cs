@@ -20,7 +20,7 @@ namespace JC.CommandLine.UnitTests
                 new Argument("Recurse", ArgumentMultiplicity.Zero, false, ArgumentFlags.None)
             }.ToImmutableArray(),
             "-/".ToImmutableArray(),
-            false, NameMatchingOptions.Stem, true, '@');
+            false, NameMatchingOptions.Stem, UnnamedValuesParseModel.AllowAll, '@');
 
         [TestMethod]
         public void Returns_single_argument_value()

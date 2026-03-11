@@ -28,7 +28,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
             }.ToImmutableArray();
             var argumentDelimitters = new char[] { '-', '/' }.ToImmutableArray();
             var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+                NameMatchingOptions.Stem, UnnamedValuesParseModel.AllowAll, '@');
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new PropertyBinder();
             var result = testee.CreateObject<ParseWarningsTarget>(resolution);
@@ -58,7 +58,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
             }.ToImmutableArray();
             var argumentDelimitters = new char[] { '-', '/' }.ToImmutableArray();
             var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+                NameMatchingOptions.Stem, UnnamedValuesParseModel.AllowAll, '@');
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new PropertyBinder();
             var result = testee.CreateObject<ParseWarningsTargetWithReadOnlyProperty>(resolution);
@@ -84,7 +84,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
             }.ToImmutableArray();
             var argumentDelimitters = new char[] { '-', '/' }.ToImmutableArray();
             var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+                NameMatchingOptions.Stem, UnnamedValuesParseModel.AllowAll, '@');
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new PropertyBinder();
             var result = testee.CreateObject<InvalidParseWarningsTarget>(resolution);
@@ -110,7 +110,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
             }.ToImmutableArray();
             var argumentDelimitters = new char[] { '-', '/' }.ToImmutableArray();
             var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+                NameMatchingOptions.Stem, UnnamedValuesParseModel.AllowAll, '@');
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new PropertyBinder();
             var result = testee.CreateObject<MoreGeneralTypeParseWarningsTarget>(resolution);

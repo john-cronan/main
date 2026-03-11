@@ -35,7 +35,7 @@ namespace JC.CommandLine.UnitTests.ConstructorBinderUnitTests
             }.ToImmutableArray();
             var delimitters = "-/".ToImmutableArray();
             _model = new ParseModel(arguments, delimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+                NameMatchingOptions.Stem, UnnamedValuesParseModel.AllowAll, '@');
             _actualModelResolutions = new ActualModelResolution(_actuals, _model);
             _testee = new ConstructorBinder();
         }

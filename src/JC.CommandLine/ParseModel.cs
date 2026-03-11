@@ -9,19 +9,19 @@ namespace JC.CommandLine
         private readonly ImmutableArray<char> _argumentDelimitters;
         private readonly bool _caseSensitive;
         private readonly NameMatchingOptions _nameMatching;
-        private readonly bool _allowUnnamedValues;
         private readonly char? _argsFileDelimitter;
+        private readonly UnnamedValuesParseModel _unnamedValues;
 
         public ParseModel(ImmutableArray<Argument> arguments,
             ImmutableArray<char> argumentDelimitters, bool caseSensitive,
-            NameMatchingOptions nameMatching, bool allowUnnamedValues,
+            NameMatchingOptions nameMatching, UnnamedValuesParseModel unnamedValues,
             char? argsFileDelimitter)
         {
             _arguments = arguments;
             _argumentDelimitters = argumentDelimitters;
             _caseSensitive = caseSensitive;
             _nameMatching = nameMatching;
-            _allowUnnamedValues = allowUnnamedValues;
+            _unnamedValues = unnamedValues;
             _argsFileDelimitter = argsFileDelimitter;
         }
 
@@ -33,7 +33,6 @@ namespace JC.CommandLine
 
         public NameMatchingOptions NameMatching => _nameMatching;
 
-        public bool AllowUnnamedValues => _allowUnnamedValues;
 
         public StringComparison StringComparisons
         {
@@ -44,5 +43,7 @@ namespace JC.CommandLine
         }
 
         public char? ArgsFileDelimitter => _argsFileDelimitter;
+
+        public UnnamedValuesParseModel UnnamedValues => _unnamedValues;
     }
 }

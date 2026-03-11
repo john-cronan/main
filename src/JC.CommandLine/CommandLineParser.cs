@@ -78,8 +78,6 @@ namespace JC.CommandLine
         }
 
 
-        public bool AllowUnnamedValues => _model.AllowUnnamedValues;
-
         ImmutableArray<char> ICommandLineParser.ArgumentDelimitters => _model.ArgumentDelimitters;
 
         bool ICommandLineParser.CaseSensitive => _model.CaseSensitive;

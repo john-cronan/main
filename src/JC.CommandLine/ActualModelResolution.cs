@@ -135,16 +135,60 @@ namespace JC.CommandLine
             List<CommandLineParseException> errors,
             List<CommandLineParseException> warnings)
         {
-            if (!_model.AllowUnnamedValues && _actuals.Any(a => a.IsUnnamedValuesNodeGroup))
+            if (_actuals.Count(a => a.IsUnnamedValuesNodeGroup) > 2)
+            {
+                var ex = new CommandLineParseException("There are more than two unnamed value nodes. This is probably an error. Normally, there are at most one leading and one trailing unnamed value nodes");
+                warnings.Add(ex);
+            }
+            if (_model.UnnamedValues == UnnamedValuesParseModel.DisallowAll
+                && _actuals.Any(a => a.IsUnnamedValuesNodeGroup))
             {
                 var msg = "Unnamed values are not permitted";
                 var error = new CommandLineParseException(msg);
                 errors.Add(error);
             }
-            if (_actuals.Count(a => a.IsUnnamedValuesNodeGroup) > 2)
+            else
             {
-                var ex = new CommandLineParseException("There are more than two unnamed value nodes. This is probably an error. Normally, there are at most one leading and one trailing unnamed value nodes");
-                warnings.Add(ex);
+                ValidateLeadingUnnamedValues(errors, warnings);
+                ValidateTrailingUnnamedValues(errors, warnings);
+            }
+        }
+
+        private void ValidateLeadingUnnamedValues(
+            List<CommandLineParseException> errors,
+            List<CommandLineParseException> warnings)
+        {
+            var leadingUnnamedValues = CommandLineNodeGroup.GetLeadingUnnamedValues(_actuals);
+            switch (_model.UnnamedValues.LeadingMultiplicity)
+            {
+                case ArgumentMultiplicity.Zero when leadingUnnamedValues.Any():
+                    errors.Add(new CommandLineParseException("Leading unnamed values are not permitted"));
+                    break;
+                case ArgumentMultiplicity.One when leadingUnnamedValues.Count() != 1:
+                    errors.Add(new CommandLineParseException("Exactly one leading unnamed value expected"));
+                    break;
+                case ArgumentMultiplicity.OneOrMore when !leadingUnnamedValues.Any():
+                    errors.Add(new CommandLineParseException("At least one leading unnamed value is required"));
+                    break;
+            }
+        }
+
+        private void ValidateTrailingUnnamedValues(
+            List<CommandLineParseException> errors,
+            List<CommandLineParseException> warnings)
+        {
+            var trailingUnnamedValues = CommandLineNodeGroup.GetTrailingUnnamedValues(_actuals);
+            switch (_model.UnnamedValues.TrailingMultiplicity)
+            {
+                case ArgumentMultiplicity.Zero when trailingUnnamedValues.Any():
+                    errors.Add(new CommandLineParseException("Trailing unnamed values are not permitted"));
+                    break;
+                case ArgumentMultiplicity.One when trailingUnnamedValues.Count() != 1:
+                    errors.Add(new CommandLineParseException("Exactly one trailing unnamed value expected"));
+                    break;
+                case ArgumentMultiplicity.OneOrMore when !trailingUnnamedValues.Any():
+                    errors.Add(new CommandLineParseException("At least one trailing unnamed value is required"));
+                    break;
             }
         }
 

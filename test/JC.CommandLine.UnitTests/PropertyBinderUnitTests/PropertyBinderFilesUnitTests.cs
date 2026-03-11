@@ -65,7 +65,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
             }.ToImmutableArray();
             var delimitters = new char[] { '/', '-' }.ToImmutableArray();
             var model = new ParseModel(arguments, delimitters, false,
-                NameMatchingOptions.Exact, true, '@');
+                NameMatchingOptions.Exact, UnnamedValuesParseModel.AllowAll, '@');
             var resolution = new ActualModelResolution(actuals, model, _virtualFilesystem.Object);
             IObjectBinder testee = new PropertyBinder(_virtualFilesystem.Object);
             var instance = testee.CreateObject<T>(resolution);

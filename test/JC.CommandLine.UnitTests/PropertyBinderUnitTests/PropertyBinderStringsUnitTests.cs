@@ -116,7 +116,7 @@ namespace JC.CommandLine.UnitTests
             }.ToImmutableArray();
             var delimitters = new char[] { '-', '/' }.ToImmutableArray();
             var model = new ParseModel(arguments, delimitters, false,
-                NameMatchingOptions.Exact, true, '@');
+                NameMatchingOptions.Exact, UnnamedValuesParseModel.AllowAll, '@');
             var resolution = new ActualModelResolution(actuals, model);
             var filesystemMock = new Mock<IFilesystem>();
             filesystemMock.Setup(m => m.DirectoryExists(It.IsAny<string>())).Returns(true);

@@ -18,8 +18,8 @@ namespace JC.CommandLine
         private BindingTypes _bindingType;
         private bool _caseSensitive;
         private NameMatchingOptions _nameMatchingOption;
-        private bool _allowUnnamedValues;
         private char? _argsFileDelimitter;
+        private UnnamedValuesParseModel _unnamedValuesModel;
 
         public CommandLineParserBuilder()
         {
@@ -28,7 +28,7 @@ namespace JC.CommandLine
             _bindingType = BindingTypes.PropertyBinding;
             _caseSensitive = false;
             _nameMatchingOption = NameMatchingOptions.Stem;
-            _allowUnnamedValues = true;
+            _unnamedValuesModel = UnnamedValuesParseModel.AllowAll;
         }
 
         public CommandLineParserBuilder AddSwitch(string name)
@@ -64,7 +64,7 @@ namespace JC.CommandLine
             return this;
         }
 
-        public CommandLineParserBuilder AddArgument(string name, ArgumentMultiplicity multiplicity, 
+        public CommandLineParserBuilder AddArgument(string name, ArgumentMultiplicity multiplicity,
             bool required)
         {
             Guard.IsNotNullOrWhitespace(name, nameof(name));
@@ -72,7 +72,7 @@ namespace JC.CommandLine
             return AddArgument(new string[] { name }, multiplicity, required);
         }
 
-        public CommandLineParserBuilder AddArgument(IEnumerable<string> names, 
+        public CommandLineParserBuilder AddArgument(IEnumerable<string> names,
             ArgumentMultiplicity multiplicity, bool required)
         {
             return AddArgument(names, multiplicity, required, ArgumentFlags.None);
@@ -119,7 +119,7 @@ namespace JC.CommandLine
             var arguments = _arguments.ToImmutableArray<Argument>();
             var delimitters = _argumentDelimitters.ToImmutableArray();
             var model = new ParseModel(arguments, delimitters, _caseSensitive,
-                _nameMatchingOption, _allowUnnamedValues, _argsFileDelimitter);
+                _nameMatchingOption, _unnamedValuesModel, _argsFileDelimitter);
             var objectBinder = _bindingType == BindingTypes.ConstructorBinding ?
                     (IObjectBinder)new ConstructorBinder() : (IObjectBinder)new PropertyBinder();
             return new CommandLineParser(model, objectBinder);
@@ -133,7 +133,7 @@ namespace JC.CommandLine
 
         public CommandLineParserBuilder AllowUnnamedValues()
         {
-            _allowUnnamedValues = true;
+            _unnamedValuesModel = UnnamedValuesParseModel.AllowAll;
             return this;
         }
 
@@ -145,7 +145,7 @@ namespace JC.CommandLine
 
         public CommandLineParserBuilder DisallowUnnamedValues()
         {
-            _allowUnnamedValues = false;
+            _unnamedValuesModel = UnnamedValuesParseModel.DisallowAll;
             return this;
         }
 
@@ -203,7 +203,5 @@ namespace JC.CommandLine
 
         public IEnumerable<char> ArgumentDelimitters => _argumentDelimitters;
         public bool CaseSensitive => _caseSensitive;
-        //public NameMatchingOptions NameMatchingOption => _nameMatchingOption;
-        public bool UnnamedValuesAllowed => _allowUnnamedValues;
     }
 }

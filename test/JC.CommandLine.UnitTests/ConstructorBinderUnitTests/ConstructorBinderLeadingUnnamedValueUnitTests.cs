@@ -70,7 +70,7 @@ namespace JC.CommandLine.UnitTests.ConstructorBinderUnitTests
             }.ToImmutableArray();
             var argumentDelimitters = "-/".ToImmutableArray();
             var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+                NameMatchingOptions.Stem, UnnamedValuesParseModel.AllowAll, '@');
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new ConstructorBinder();
             var result = testee.CreateObject<T>(resolution);
