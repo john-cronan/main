@@ -131,6 +131,37 @@ namespace JC.CommandLine
             return this;
         }
 
+        public CommandLineParserBuilder AllowLeadingUnnamedValues()
+        {
+            _unnamedValuesModel = new UnnamedValuesParseModel(
+                ArgumentMultiplicity.ZeroOrMore, _unnamedValuesModel.TrailingMultiplicity);
+            return this;
+        }
+
+        public CommandLineParserBuilder AllowLeadingUnnamedValues(
+            ArgumentMultiplicity multiplicity)
+        {
+            _unnamedValuesModel = new UnnamedValuesParseModel(multiplicity, 
+                _unnamedValuesModel.TrailingMultiplicity);
+            return this;
+        }
+
+        public CommandLineParserBuilder AllowTrailingUnnamedValues()
+        {
+            _unnamedValuesModel = new UnnamedValuesParseModel(
+                _unnamedValuesModel.LeadingMultiplicity,
+                ArgumentMultiplicity.ZeroOrMore);
+            return this;
+        }
+
+        public CommandLineParserBuilder AllowTrailingUnnamedValues(
+            ArgumentMultiplicity multiplicity)
+        {
+            _unnamedValuesModel = new UnnamedValuesParseModel(
+                _unnamedValuesModel.LeadingMultiplicity, multiplicity);
+            return this;
+        }
+
         public CommandLineParserBuilder AllowUnnamedValues()
         {
             _unnamedValuesModel = UnnamedValuesParseModel.AllowAll;
@@ -140,6 +171,22 @@ namespace JC.CommandLine
         public CommandLineParserBuilder DisallowArgsFiles()
         {
             _argsFileDelimitter = null;
+            return this;
+        }
+
+        public CommandLineParserBuilder DisallowLeadingUnnamedValues()
+        {
+            _unnamedValuesModel = new UnnamedValuesParseModel(
+                ArgumentMultiplicity.Zero, 
+                _unnamedValuesModel.TrailingMultiplicity);
+            return this;
+        }
+
+        public CommandLineParserBuilder DisallowTrailingUnnamedValues()
+        {
+            _unnamedValuesModel = new UnnamedValuesParseModel(
+                _unnamedValuesModel.LeadingMultiplicity, 
+                ArgumentMultiplicity.Zero);
             return this;
         }
 

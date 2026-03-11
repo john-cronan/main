@@ -78,10 +78,17 @@ namespace JC.CommandLine
         }
 
 
-        ImmutableArray<char> ICommandLineParser.ArgumentDelimitters => _model.ArgumentDelimitters;
+        ImmutableArray<char> ICommandLineParser.ArgumentDelimitters 
+            => _model.ArgumentDelimitters;
 
         bool ICommandLineParser.CaseSensitive => _model.CaseSensitive;
 
         internal ImmutableArray<Argument> Arguments => _model.Arguments;
+
+        ArgumentMultiplicity ICommandLineParser.LeadingUnnamedValueMultiplicity 
+            => _model.UnnamedValues.LeadingMultiplicity;
+
+        ArgumentMultiplicity ICommandLineParser.TrailingUnnamedValueMultiplicity 
+            => _model.UnnamedValues.TrailingMultiplicity;
     }
 }

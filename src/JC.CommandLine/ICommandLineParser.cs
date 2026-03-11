@@ -10,5 +10,7 @@ namespace JC.CommandLine
 
         ImmutableArray<char> ArgumentDelimitters { get; }
         bool CaseSensitive { get; }
+        ArgumentMultiplicity LeadingUnnamedValueMultiplicity { get; }
+        ArgumentMultiplicity TrailingUnnamedValueMultiplicity { get; }
     }
 }

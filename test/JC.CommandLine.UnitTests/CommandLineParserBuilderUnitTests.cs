@@ -157,5 +157,68 @@ namespace JC.CommandLine.UnitTests
                 Assert.IsTrue(ex.Message.Contains(argumentNames[1]));
             }
         }
+
+        [TestMethod]
+        public void Allows_unnamed_values()
+        {
+            var builder = new CommandLineParserBuilder();
+            Assert.AreEqual(ArgumentMultiplicity.ZeroOrMore, 
+                builder.CreateParser().LeadingUnnamedValueMultiplicity);
+            Assert.AreEqual(ArgumentMultiplicity.ZeroOrMore,
+                builder.CreateParser().TrailingUnnamedValueMultiplicity);
+            builder.DisallowUnnamedValues();
+            builder.AllowUnnamedValues();
+            Assert.AreEqual(ArgumentMultiplicity.ZeroOrMore,
+                builder.CreateParser().LeadingUnnamedValueMultiplicity);
+            Assert.AreEqual(ArgumentMultiplicity.ZeroOrMore,
+                builder.CreateParser().TrailingUnnamedValueMultiplicity);
+        }
+
+        [TestMethod]
+        public void Disallows_unnamed_values()
+        {
+            var parser =
+                new CommandLineParserBuilder()
+                .DisallowUnnamedValues()
+                .CreateParser();
+            Assert.AreEqual(ArgumentMultiplicity.Zero, parser.LeadingUnnamedValueMultiplicity);
+            Assert.AreEqual(ArgumentMultiplicity.Zero, parser.TrailingUnnamedValueMultiplicity);
+        }
+
+        [TestMethod]
+        public void Respects_leading_unnamed_multiplicity()
+        {
+            var builder = new CommandLineParserBuilder();
+            builder.AllowLeadingUnnamedValues(ArgumentMultiplicity.One);
+            Assert.AreEqual(ArgumentMultiplicity.One,
+                builder.CreateParser().LeadingUnnamedValueMultiplicity);
+            builder.AllowLeadingUnnamedValues(ArgumentMultiplicity.OneOrMore);
+            Assert.AreEqual(ArgumentMultiplicity.OneOrMore,
+                builder.CreateParser().LeadingUnnamedValueMultiplicity);
+            builder.AllowLeadingUnnamedValues(ArgumentMultiplicity.Zero);
+            Assert.AreEqual(ArgumentMultiplicity.Zero,
+                builder.CreateParser().LeadingUnnamedValueMultiplicity);
+            builder.AllowLeadingUnnamedValues(ArgumentMultiplicity.ZeroOrMore);
+            Assert.AreEqual(ArgumentMultiplicity.ZeroOrMore,
+                builder.CreateParser().LeadingUnnamedValueMultiplicity);
+        }
+
+        [TestMethod]
+        public void Respects_trailing_unnamed_multiplicity()
+        {
+            var builder = new CommandLineParserBuilder();
+            builder.AllowTrailingUnnamedValues(ArgumentMultiplicity.One);
+            Assert.AreEqual(ArgumentMultiplicity.One,
+                builder.CreateParser().TrailingUnnamedValueMultiplicity);
+            builder.AllowTrailingUnnamedValues(ArgumentMultiplicity.OneOrMore);
+            Assert.AreEqual(ArgumentMultiplicity.OneOrMore,
+                builder.CreateParser().TrailingUnnamedValueMultiplicity);
+            builder.AllowTrailingUnnamedValues(ArgumentMultiplicity.Zero);
+            Assert.AreEqual(ArgumentMultiplicity.Zero,
+                builder.CreateParser().TrailingUnnamedValueMultiplicity);
+            builder.AllowTrailingUnnamedValues(ArgumentMultiplicity.ZeroOrMore);
+            Assert.AreEqual(ArgumentMultiplicity.ZeroOrMore,
+                builder.CreateParser().TrailingUnnamedValueMultiplicity);
+        }
     }
 }
