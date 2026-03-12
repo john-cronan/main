@@ -12,6 +12,8 @@ namespace JC.CommandLine
         private const string LeadingUnnamedValuesParameterName = "leadingUnnamedValues";
         private const string TrailingUnnamedValuesParameterName = "trailingUnnamedValues";
         private const string ParseWarningsParameterName = "parseWarnings";
+        private const string LeadingUnnamedValueParameterName = "leadingUnnamedValue";
+        private const string TrailingUnnamedValueParameterName = "trailingUnnamedValue";
 
         private readonly ArgumentValueConverter _converter;
 
@@ -64,6 +66,8 @@ namespace JC.CommandLine
                 || ParameterNameIs(parameter, LeadingUnnamedValuesParameterName)
                 || ParameterNameIs(parameter, TrailingUnnamedValuesParameterName)
                 || ParameterNameIs(parameter, ParseWarningsParameterName)
+                || ParameterNameIs(parameter, LeadingUnnamedValueParameterName)
+                || ParameterNameIs(parameter, TrailingUnnamedValueParameterName)
                 || model.Arguments.Any(a => NameMatching.IsMatch(parameter.Name, a.Names, model.NameMatching, StringComparison.InvariantCultureIgnoreCase))
                 select parameter;
 
@@ -125,7 +129,13 @@ namespace JC.CommandLine
             if (ParameterNameIs(parameter, TrailingUnnamedValuesParameterName))
             {
                 return TryGetTrailingUnnamedValuesParameterValue(actualModelResolution,
-                parameter, out value);
+                    parameter, out value);
+            }
+
+            if (ParameterNameIs(parameter, TrailingUnnamedValueParameterName))
+            {
+                return TryGetTrailingUnnamedValueParameterValue(actualModelResolution,
+                    parameter, out value);
             }
 
             if (ParameterNameIs(parameter, LeadingUnnamedValuesParameterName))
@@ -134,9 +144,9 @@ namespace JC.CommandLine
                     parameter, out value);
             }
 
-            if (ParameterNameIs(parameter, TrailingUnnamedValuesParameterName))
+            if (ParameterNameIs(parameter, LeadingUnnamedValueParameterName))
             {
-                return TryGetTrailingUnnamedValuesParameterValue(actualModelResolution, 
+                return TryGetLeadingUnnamedValueParameterValue(actualModelResolution,
                     parameter, out value);
             }
 
@@ -213,6 +223,24 @@ namespace JC.CommandLine
             return false;
         }
 
+        private bool TryGetLeadingUnnamedValueParameterValue(
+            ActualModelResolution actualModelResolution, ParameterInfo parameter, 
+            out object value)
+        {
+            value = null;
+            if (actualModelResolution.Model.UnnamedValues.LeadingMultiplicity == ArgumentMultiplicity.One)
+            {
+                value = CommandLineNodeGroup.GetLeadingUnnamedValues(actualModelResolution.Actuals)
+                    .Select(n => n.Text)
+                    .SingleOrDefault();
+                return true;
+            }
+            else
+            {
+                 return false;
+            }
+        }
+
         private bool TryGetTrailingUnnamedValuesParameterValue(ActualModelResolution actualModelResolution,
             ParameterInfo parameter, out object value)
         {
@@ -242,6 +270,24 @@ namespace JC.CommandLine
                 return true;
             }
             return false;
+        }
+
+        private bool TryGetTrailingUnnamedValueParameterValue(
+            ActualModelResolution actualModelResolution, ParameterInfo parameter,
+            out object value)
+        {
+            value = null;
+            if (actualModelResolution.Model.UnnamedValues.TrailingMultiplicity == ArgumentMultiplicity.One)
+            {
+                value = CommandLineNodeGroup.GetTrailingUnnamedValues(actualModelResolution.Actuals)
+                    .Select(n => n.Text)
+                    .SingleOrDefault();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private bool TryGetParseWarningsParameterValue(ActualModelResolution actualModelResolution,
