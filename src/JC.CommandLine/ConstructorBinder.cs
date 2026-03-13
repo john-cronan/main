@@ -248,6 +248,12 @@ namespace JC.CommandLine
             ParameterInfo parameter, out object value)
         {
             value = null;
+            if (parameter.ParameterType.IsAssignableFrom(typeof(CommandLineParseException)))
+            {
+                (var errors, var warnings) = actualModelResolution.Validate();
+                value = warnings;
+                return true;
+            }
             return false;
         }
 
