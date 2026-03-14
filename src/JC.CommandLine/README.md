@@ -40,14 +40,25 @@ parse results to a newly-created object.
 The object binders can bind (case insensitively) to arguments and 
 properrties of most commonly used value types. Command line arguments 
 with multiple values can be bound to a wide variety of collection types, 
-including array, IEnumerable<T>, List<T>, IList<T>, ImmutableArray<T>, 
-as well as their corresponding non-generic types.
+including array, IEnumerable&lt;T&gt;, List&lt;T&gt;, IList&lt;T&gt;, 
+ImmutableArray&lt;T&gt;, as well as their corresponding non-generic 
+types.
 
 Unnamed values are bound to arguments with the names "unnamedValues",
 "leadingUnnamedValues", and "trailingUnnamedValues". Parse warning are 
 bound to a property named "parseWarnings".
 
 See the integration tests in the test folder fr examples of usage.
+
+## Future Directions
+
+Testing. The project could use more organized, thorough testing.
+
+Binding errors and warnings. Currently, exceptions occurring during object
+binding are not handled ideally, especially type conversion errors. Revisions
+to allow the binders to contribute errors and warnings to the parsing/binding
+process would be beneficial.
+
 
 
 
