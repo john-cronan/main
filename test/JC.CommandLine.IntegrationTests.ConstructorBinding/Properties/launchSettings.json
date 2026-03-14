@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "JC.CommandLine.IntegrationTests.ConstructorBinding": {
+      "commandName": "Project",
+      "commandLineArgs": "Import -batch-size 1000 -verbose \"File A.csv\" \"File B.xml\" \"File C.json\""
+    }
+  }
+}
