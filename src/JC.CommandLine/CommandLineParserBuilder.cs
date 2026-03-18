@@ -31,6 +31,9 @@ namespace JC.CommandLine
             _allowUnnamedValues = true;
         }
 
+        /// <summary>
+        /// Defines a boolean argument with the specified name.
+        /// </summary>
         public CommandLineParserBuilder AddSwitch(string name)
         {
             Guard.IsNotNullOrWhitespace(name, nameof(name));
@@ -38,6 +41,10 @@ namespace JC.CommandLine
             return AddSwitch(new string[] { name });
         }
 
+        /// <summary>
+        /// Defines a boolean argument identified by any of the specified 
+        /// names.
+        /// </summary>
         public CommandLineParserBuilder AddSwitch(IEnumerable<string> names)
         {
             Guard.IsNotNullOrEmpty(names, nameof(names));
@@ -64,20 +71,32 @@ namespace JC.CommandLine
             return this;
         }
 
-        public CommandLineParserBuilder AddArgument(string name, ArgumentMultiplicity multiplicity, 
-            bool required)
+        /// <summary>
+        /// Adds an argument with the specified name and number of possible
+        /// or required values.
+        /// </summary>
+        public CommandLineParserBuilder AddArgument(string name, 
+            ArgumentMultiplicity multiplicity, bool required)
         {
             Guard.IsNotNullOrWhitespace(name, nameof(name));
 
             return AddArgument(new string[] { name }, multiplicity, required);
         }
 
+        /// <summary>
+        /// Adds an argument idendified by any of the specified names, and 
+        /// having a specified number of possible or required values.
+        /// </summary>
         public CommandLineParserBuilder AddArgument(IEnumerable<string> names, 
             ArgumentMultiplicity multiplicity, bool required)
         {
             return AddArgument(names, multiplicity, required, ArgumentFlags.None);
         }
 
+        /// <summary>
+        /// Adds an argument idendified by any of the specified names, and 
+        /// having a specified number of possible or required values.
+        /// </summary>
         public CommandLineParserBuilder AddArgument(IEnumerable<string> names,
             ArgumentMultiplicity multiplicity, bool required, ArgumentFlags flags)
         {
@@ -105,6 +124,10 @@ namespace JC.CommandLine
             return this;
         }
 
+        /// <summary>
+        /// Adds an argument idendified by any of the specified names, and 
+        /// having a specified number of possible or required values.
+        /// </summary>
         public CommandLineParserBuilder AddArgument(string name, ArgumentMultiplicity multiplicity,
             bool required, ArgumentFlags flags)
         {
@@ -114,6 +137,9 @@ namespace JC.CommandLine
             return AddArgument(names, multiplicity, required, flags);
         }
 
+        /// <summary>
+        /// Creates and returns a configured command line parser.
+        /// </summary>
         public ICommandLineParser CreateParser()
         {
             var arguments = _arguments.ToImmutableArray<Argument>();
@@ -125,60 +151,130 @@ namespace JC.CommandLine
             return new CommandLineParser(model, objectBinder);
         }
 
+        /// <summary>
+        /// Specifies that the configured parser will consider any argument
+        /// starting with the specified character to be a file containing
+        /// additional arguments.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Argument files specify addtional arguments, one per line. An
+        /// argument and any associated values must be on separate lines.
+        /// </para>
+        /// <para>
+        /// Multiple argument files can be specified on a single command line.
+        /// </para>
+        /// </remarks>
         public CommandLineParserBuilder AllowArgsFiles(char delimitter)
         {
             _argsFileDelimitter = delimitter;
             return this;
         }
 
+        /// <summary>
+        /// Specifies that the configured parser will allow values at the
+        /// beginning and at the end of the command line that are not associated
+        /// with any argument.
+        /// </summary>
         public CommandLineParserBuilder AllowUnnamedValues()
         {
             _allowUnnamedValues = true;
             return this;
         }
 
+        /// <summary>
+        /// Specifies that the configured parser will not allow and 
+        /// parse argument files.
+        /// </summary>
         public CommandLineParserBuilder DisallowArgsFiles()
         {
             _argsFileDelimitter = null;
             return this;
         }
 
+        /// <summary>
+        /// Specifies that the configured parse will not allow values at the
+        /// beginning and at the end of the command line that are not 
+        /// associated with any argument.
+        /// </summary>
         public CommandLineParserBuilder DisallowUnnamedValues()
         {
             _allowUnnamedValues = false;
             return this;
         }
 
+        /// <summary>
+        /// Specifies that the configured parser will ignore case when
+        /// considering argument and switch names. This case-insentivity
+        /// does not apply to object binding. Binding to properties and
+        /// constructor parameters is always case-insensitive.
+        /// </summary>
         public CommandLineParserBuilder IsCaseInsensitive()
         {
             _caseSensitive = false;
             return this;
         }
 
+        /// <summary>
+        /// Specifies that the configured parser will match case when
+        /// considering argument and switch names. This case-sentivity
+        /// does not apply to object binding. Binding to properties and
+        /// constructor parameters is always case-insensitive.
+        /// </summary>
         public CommandLineParserBuilder IsCaseSensitive()
         {
             _caseSensitive = true;
             return this;
         }
 
+        /// <summary>
+        /// Specifies that the configured parser will match argument and
+        /// switch names exactly as they are defined by the 
+        /// <see cref="AddArgument"/> and <see cref="AddSwitch"/> methods, 
+        /// within the bounds of the confiured case-sensitivity.
+        /// </summary>
         public CommandLineParserBuilder UseExactNameMatching()
         {
             _nameMatchingOption = NameMatchingOptions.Exact;
             return this;
         }
 
+        /// <summary>
+        /// Configures the configured parser will use stem name matching,
+        /// which allows command lines to specify the beginning of an
+        /// argument's name. If the portion specified is ambiguous, 
+        /// an exception is thrown. This behavior is the builder's
+        /// default.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Example: If an argument is defined with the name "Verbose", a
+        /// command line can specify, for example, "-verbose", "-v", or
+        /// "-ver", providing there is no defined "Version" argument.
+        /// </para>
+        /// </remarks>
         public CommandLineParserBuilder UseStemNameMatching()
         {
             _nameMatchingOption = NameMatchingOptions.Stem;
             return this;
         }
 
+        /// <summary>
+        /// Specifies that the configured parser will consider a node on 
+        /// command line to be an argument if it starts with the specified
+        /// character.
+        /// </summary>
         public CommandLineParserBuilder UseArgumentDelimitter(char delimitter)
         {
             _argumentDelimitters = new char[] { delimitter };
             return this;
         }
 
+        /// <summary>
+        /// Specifies that the configured parser will consider a node on 
+        /// command line to be an argument if it starts with any of the 
+        /// specified characters.
+        /// </summary>
         public CommandLineParserBuilder UseArgumentDelimitters(
             params char[] delimitters)
         {
@@ -188,12 +284,26 @@ namespace JC.CommandLine
             return this;
         }
 
+        /// <summary>
+        /// Specifies that the configured parser's 
+        /// <see cref="ICommandLineParser.Parse()"/> method will return an
+        /// instance of <see cref="ICommandLineParseResults"/> configured
+        /// to bind to objects by passing parsed values into their 
+        /// constructors.
+        /// </summary>
         public CommandLineParserBuilder UseConstructorBinding()
         {
             _bindingType = BindingTypes.ConstructorBinding;
             return this;
         }
 
+        /// <summary>
+        /// Specifies that the configured parser's 
+        /// <see cref="ICommandLineParser.Parse()"/> method will return an
+        /// instance of <see cref="ICommandLineParseResults"/> configured
+        /// to bind to objects by setting properties with parsed values.
+        /// This is the builder's default.
+        /// </summary>
         public CommandLineParserBuilder UsePropertyBinding()
         {
             _bindingType = BindingTypes.PropertyBinding;
@@ -201,9 +311,22 @@ namespace JC.CommandLine
         }
 
 
+        /// <summary>
+        /// Gets the currently configured set of argument delimitters.
+        /// </summary>
         public IEnumerable<char> ArgumentDelimitters => _argumentDelimitters;
+
+        /// <summary>
+        /// Gets a flag indicating whether the configured parser will
+        /// match case with respect to argument and switch names.
+        /// </summary>
         public bool CaseSensitive => _caseSensitive;
-        //public NameMatchingOptions NameMatchingOption => _nameMatchingOption;
+
+        /// <summary>
+        /// Gets a flag indicating whether the configured parser will allow
+        /// values at the beginning and at the end of the command line that are
+        /// not associated with any argument.
+        /// </summary>
         public bool UnnamedValuesAllowed => _allowUnnamedValues;
     }
 }

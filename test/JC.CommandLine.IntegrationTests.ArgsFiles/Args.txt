@@ -1,0 +1,3 @@
+-strict
+-batch-size
+1000

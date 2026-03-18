@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "JC.CommandLine.IntegrationTests.ArgsFiles": {
+      "commandName": "Project",
+      "commandLineArgs": "Import -f @FileList.txt @Args.txt"
+    }
+  }
+}
