@@ -84,6 +84,10 @@ namespace JC.CommandLine
 
         bool ICommandLineParser.CaseSensitive => _model.CaseSensitive;
 
+        NameMatchingOptions ICommandLineParser.NameMatching => _model.NameMatching;
+
+
         internal ImmutableArray<Argument> Arguments => _model.Arguments;
+
     }
 }
