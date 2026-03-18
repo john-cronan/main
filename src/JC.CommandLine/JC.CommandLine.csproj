@@ -9,6 +9,8 @@
     <RepositoryUrl>https://github.com/john-cronan/main</RepositoryUrl>
     <PackageTags>Command Line;Command Line Parser</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
