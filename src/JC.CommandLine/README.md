@@ -48,7 +48,49 @@ Unnamed values are bound to arguments with the names "unnamedValues",
 "leadingUnnamedValues", and "trailingUnnamedValues". Parse warning are 
 bound to a property named "parseWarnings".
 
-See the integration tests in the test folder fr examples of usage.
+The following command line:
+
+	Program.exe Import /Files authors.csv titles.csv publishers.csv /Batch-Size 1000 /S (local) /D Books /Verbose
+
+May be defined and parsed by the following code:
+
+	var args =
+		new CommandLineParserBuilder()
+			.UseConstructorBinding()
+			.AddArgument("Files", ArgumentMultiplicity.OneOrMore, true)
+			.AddArgument("Batch-Size", ArgumentMultiplicity.One, false)
+			.AddArgument("Server", ArgumentMultiplicity.One, false)
+			.AddArgument("Database", ArgumentMultiplicity.One, true)
+			.AddSwitch("Verbose")
+			.CreateParser()
+			.Parse()
+			.Bind<CommandLine>();
+
+And bound to a class with the following constructor:
+
+    internal class CommandLine
+    {
+        public CommandLine(ImmutableArray<string> leadingUnnamedValues,
+            ImmutableArray<string> files, int? batchSize, string server,
+            string database, bool verbose)
+        {                
+        }
+    }
+
+Or, if using property binding (with the `UsePropertyBinding` method):
+
+    internal class CommandLine
+    {
+        public ImmutableArray<string> LeadingUnnamedValues { get; set; }
+        public ImmutableArray<string> Files { get; set; }
+        public int? BatchSize { get; set; }
+        public string Server { get; set; }
+        public string Database { get; set; }
+        public bool Verbose { get; set; }
+    }
+
+See the integration tests in the test folder for additional examples of 
+usage.
 
 ## Future Directions
 
