@@ -4,6 +4,9 @@ using System.Collections.Immutable;
 
 namespace JC.CommandLine
 {
+    /// <summary>
+    /// An abstract type representing the behavior of parsing a command line.
+    /// </summary>
     public interface ICommandLineParser
     {
         /// <summary>

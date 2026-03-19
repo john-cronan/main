@@ -123,7 +123,7 @@ namespace JPC.Common
             _value = value;
         }
 
-        public override bool Equals([NotNullWhen(true)] object? obj)
+        public override bool Equals([NotNullWhen(true)] object obj)
         {
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj));

@@ -22,7 +22,7 @@ namespace JPC.Common.UnitTests
             var plaintextTwo = plaintextOne.ToArray();
             var key = TestingEncryptionKeys.KeysOf256Bits[0];
             var iv = TestingEncryptionKeys.IVsOf128Bits[0];
-            var aes = SymmetricAlgorithm.Create("AES");
+            using var aes = Aes.Create();
             var ciphertextOne = _testee.Encrypt(plaintextOne, key, iv);
             var ciphertextTwo = _testee.Encrypt(plaintextTwo, key, iv);
 
@@ -36,7 +36,7 @@ namespace JPC.Common.UnitTests
             var plaintextTwo = ReadResourceAsStream("FileList.gz");
             var key = TestingEncryptionKeys.KeysOf128Bits[0];
             var iv = TestingEncryptionKeys.IVsOf128Bits[0];
-            var aes = SymmetricAlgorithm.Create("AES");
+            using var aes = Aes.Create();
             using var ciphertextOne = new MemoryStream();
             using var ciphertextTwo = new MemoryStream();
 
@@ -57,7 +57,7 @@ namespace JPC.Common.UnitTests
             var key = TestingEncryptionKeys.KeysOf256Bits[0];
             var ivOne = TestingEncryptionKeys.IVsOf128Bits[0];
             var ivTwo = TestingEncryptionKeys.IVsOf128Bits[1];
-            var aes = SymmetricAlgorithm.Create("AES");
+            using var aes = Aes.Create();
             var ciphertextOne = _testee.Encrypt(plaintextOne, key, ivOne);
             var ciphertextTwo = _testee.Encrypt(plaintextTwo, key, ivTwo);
 
@@ -72,7 +72,7 @@ namespace JPC.Common.UnitTests
             var keyOne = TestingEncryptionKeys.KeysOf256Bits[0];
             var keyTwo = TestingEncryptionKeys.KeysOf256Bits[1];
             var iv = TestingEncryptionKeys.IVsOf128Bits[0];
-            var aes = SymmetricAlgorithm.Create("AES");
+            using var aes = Aes.Create();
             var ciphertextOne = _testee.Encrypt(plaintextOne, keyOne, iv);
             var ciphertextTwo = _testee.Encrypt(plaintextTwo, keyTwo, iv);
 
@@ -86,7 +86,7 @@ namespace JPC.Common.UnitTests
             using var plaintextAsStream = new MemoryStream(plaintext);
             var key = TestingEncryptionKeys.KeysOf128Bits[0];
             var iv = TestingEncryptionKeys.IVsOf128Bits[0];
-            var aes = SymmetricAlgorithm.Create("AES");
+            using var aes = Aes.Create();
             using var ciphertext = new MemoryStream();
             _testee.Encrypt(plaintextAsStream, ciphertext, key, iv);
             var ciphertextAsBytes = ReadAllBytes(ciphertext);
