@@ -57,6 +57,9 @@ namespace JC.CommandLine
     [Flags]
     public enum ArgumentFlags
     {
+        /// <summary>
+        /// No flags are applied to the argument.
+        /// </summary>
         None = 0,
 
         /// <summary>

@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace JC.CommandLine
 {
+    /// <summary>
+    /// Implements a builder that constructs instances of <see cref="ICommandLineParser"/>.
+    /// </summary>
     public sealed class CommandLineParserBuilder
     {
         private enum BindingTypes
@@ -21,6 +24,9 @@ namespace JC.CommandLine
         private bool _allowUnnamedValues;
         private char? _argsFileDelimitter;
 
+        /// <summary>
+        /// Constructs a new instance.
+        /// </summary>
         public CommandLineParserBuilder()
         {
             _arguments = new List<Argument>();
@@ -230,7 +236,7 @@ namespace JC.CommandLine
         /// <summary>
         /// Specifies that the configured parser will match argument and
         /// switch names exactly as they are defined by the 
-        /// <see cref="AddArgument"/> and <see cref="AddSwitch"/> methods, 
+        /// <see cref="M:AddArgument"/> and <see cref="M:AddSwitch"/> methods, 
         /// within the bounds of the confiured case-sensitivity.
         /// </summary>
         public CommandLineParserBuilder UseExactNameMatching()

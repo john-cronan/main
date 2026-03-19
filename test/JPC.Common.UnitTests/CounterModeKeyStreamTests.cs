@@ -40,7 +40,7 @@ namespace JPC.Common.UnitTests
             var key = TestingEncryptionKeys.KeysOf128Bits[0];
             var iv = TestingEncryptionKeys.IVsOf128Bits[0];
 
-            using var aes = SymmetricAlgorithm.Create("AES");
+            using var aes = Aes.Create();
             var one = EnumerateKeyStream(aes, key, 32);
             var two = EnumerateKeyStream(aes, key, 32);
 
@@ -52,11 +52,11 @@ namespace JPC.Common.UnitTests
         [TestMethod]
         public void KeyStream_is_unique()
         {
-            using var aes = SymmetricAlgorithm.Create("AES");
+            using var aes = Aes.Create();
             var keyStreams =
                 (from key in TestingEncryptionKeys.KeysOf256Bits
                  select EnumerateKeyStream(aes, key, 32)).ToArray();
-            using var sha = HashAlgorithm.Create(HashAlgorithmName.SHA256.Name);
+            using var sha = SHA256.Create();
             var hashesAsStrings =
                 keyStreams
                     .Select(ks => sha.ComputeHash(ks))

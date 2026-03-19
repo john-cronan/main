@@ -54,7 +54,7 @@ namespace JPC.Common.Internal
                 throw new ArgumentNullException(nameof(input));
             }
 
-            using var hashAlgorithm = HashAlgorithm.Create(hashAlgorithmName);
+            using var hashAlgorithm = CreateHashAlgorithm(hashAlgorithmName);
             return hashAlgorithm.ComputeHash(input);
         }
 
@@ -76,7 +76,7 @@ namespace JPC.Common.Internal
                 throw new ArgumentException("Specified stream is not readable", nameof(input));
             }
 
-            using var hashAlgorithm = HashAlgorithm.Create(hashAlgorithmName);
+            using var hashAlgorithm = CreateHashAlgorithm(hashAlgorithmName);
             return hashAlgorithm.ComputeHash(input);
         }
 
@@ -98,7 +98,7 @@ namespace JPC.Common.Internal
                 throw new ArgumentException("Specified stream is not readable", nameof(input));
             }
 
-            using var hashAlgorithm = HashAlgorithm.Create(hashAlgorithmName);
+            using var hashAlgorithm = CreateHashAlgorithm(hashAlgorithmName);
             return hashAlgorithm.ComputeHashAsync(input);
         }
 
@@ -192,11 +192,58 @@ namespace JPC.Common.Internal
         }
 
 
+        private static HashAlgorithm CreateHashAlgorithm(string hashAlgorithmName)
+        {
+            if (string.IsNullOrWhiteSpace(hashAlgorithmName))
+            {
+                throw new ArgumentNullException(nameof(hashAlgorithmName));
+            }
+            switch (hashAlgorithmName.ToLower())
+            {
+                case "md5":
+                    return MD5.Create();
+                case "sha1":
+                    return SHA1.Create();
+                case "sha256":
+                    return SHA256.Create();
+                case "sha384":
+                    return SHA384.Create();
+                case "sha512":
+                    return SHA512.Create();
+                case "sha3-256":
+                    return SHA3_256.Create();
+                case "sha3-384":
+                    return SHA3_384.Create();
+                case "sha3-512":
+                    return SHA3_512.Create();
+                default:
+                    throw new ArgumentException($"Unknown algorithm '{hashAlgorithmName}'");
+            }
+        }
+
+        private static SymmetricAlgorithm CreateSymmetricAlgorithm(string symmetricAlgorithmName)
+        {
+            if (string.IsNullOrWhiteSpace(symmetricAlgorithmName))
+            {
+                throw new ArgumentNullException(nameof(symmetricAlgorithmName));
+            }
+            switch (symmetricAlgorithmName.ToLower())
+            {
+                case "aes":
+                case "rijndael":
+                    return Aes.Create();
+                case "tripledes":
+                    return TripleDES.Create();
+                default:
+                    throw new ArgumentException($"Unknown algorithm '{symmetricAlgorithmName}'");
+            }
+        }
+
         private static int EncryptInternal(string symmetricAlgorithmName, Stream streamIn, Stream streamOut, byte[] key,
             byte[] iv, IEnumerable<byte> randomGenerator)
         {
             var totalByteCount = 0;
-            using var symmetricAlgorithm = SymmetricAlgorithm.Create(symmetricAlgorithmName);
+            using var symmetricAlgorithm = CreateSymmetricAlgorithm(symmetricAlgorithmName);
             var effectiveIV =
                 iv == null || iv.Length == 0
                     ? randomGenerator.Take((symmetricAlgorithm.BlockSize / 8)).ToArray()
