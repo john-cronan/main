@@ -171,5 +171,34 @@ namespace JC.CommandLine.UnitTests
             result = testee.IsPresent("Recycle");
             Assert.IsFalse(result);
         }
+
+        [TestMethod]
+        public void Returns_unnamed_values()
+        {
+            var actuals =
+                new CommandLineBuilder()
+                    .AddExeNode("Utility.exe")
+                    .AddUnnamedArgument("Import")
+                    .AddArgument("BatchSize", "1000")
+                    .AddUnnamedArgument("Authors.csv", "Titles.csv", "Publishers.csv")
+                    .GetCommandLine();
+            var arguments = new Argument[]
+            {
+                new Argument("BatchSize", ArgumentMultiplicity.One, true)
+            }.ToImmutableArray();
+            var model = new ParseModel(arguments, "-/".ToImmutableArray(), false,
+                NameMatchingOptions.Stem, true, '@');
+            var resolutions = new ActualModelResolution(actuals, model);
+            var binder = new PropertyBinder();
+            var filesystem = new Mock<IFilesystem>();
+            ICommandLineParseResults testee = new CommandLineParseResults(binder,
+                resolutions, filesystem.Object);
+            Assert.IsNotNull(testee.UnnamedValues);
+            Assert.AreEqual(4, testee.UnnamedValues.Count());
+            Assert.IsNotNull(testee.LeadingUnnamedValues);
+            Assert.AreEqual(1, testee.LeadingUnnamedValues.Count());
+            Assert.IsNotNull(testee.TrailingUnnamedValues);
+            Assert.AreEqual(3, testee.TrailingUnnamedValues.Count());
+        }
     }
 }
