@@ -74,9 +74,27 @@ namespace JC.CommandLine
         bool IsPresent(string argumentName);
 
         /// <summary>
+        /// Gets a sequence of the parsed command line's leading unnamed
+        /// values, if any.
+        /// </summary>
+        IEnumerable<string> LeadingUnnamedValues { get; }
+
+        /// <summary>
         /// Gets a collection of warnings that occurred during parsing and
         /// binding.
         /// </summary>
         CommandLineParseException ParseWarnings { get; }
+
+        /// <summary>
+        /// Gets a sequence of the parsed command line's trailing unnamed
+        /// values, if any.
+        /// </summary>
+        IEnumerable<string> TrailingUnnamedValues { get; }
+
+        /// <summary>
+        /// Gets a sequence of all the parsed command line's unnamed values, 
+        /// if any.
+        /// </summary>
+        IEnumerable<string> UnnamedValues { get; }
     }
 }

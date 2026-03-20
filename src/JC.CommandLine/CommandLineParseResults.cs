@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 namespace JC.CommandLine
@@ -9,8 +10,11 @@ namespace JC.CommandLine
         private readonly ActualModelResolution _actualModelResolution;
         private readonly IObjectBinder _objectBinder;
         private readonly ArgumentValueConverter _converter;
+        private readonly Lazy<ImmutableArray<string>> _leadingUnnamedValues;
         private readonly Lazy<CommandLineParseException> _parseWarnings;
         private readonly ICommandLineParseResults _self;
+        private readonly Lazy<ImmutableArray<string>> _trailingUnnamedValues;
+        private readonly Lazy<ImmutableArray<string>> _unnamedValues;
 
         public CommandLineParseResults(IObjectBinder objectBinder,
             ActualModelResolution actualModelResolution,
@@ -30,9 +34,34 @@ namespace JC.CommandLine
                 (var errors, var warnings) = _actualModelResolution.Validate();
                 return warnings;
             });
+            _leadingUnnamedValues = new Lazy<ImmutableArray<string>>(() =>
+            {
+                return CommandLineNodeGroup.GetLeadingUnnamedValues(_actualModelResolution.Actuals)
+                    .Select(n => n.Text)
+                    .ToImmutableArray();
+             });
+            _trailingUnnamedValues = new Lazy<ImmutableArray<string>>(() =>
+            {
+                return CommandLineNodeGroup.GetTrailingUnnamedValues(_actualModelResolution.Actuals)
+                    .Select(n => n.Text)
+                    .ToImmutableArray();
+            });
+            _unnamedValues = new Lazy<ImmutableArray<string>>(() =>
+            {
+                return CommandLineNodeGroup.GetLeadingUnnamedValues(_actualModelResolution.Actuals)
+                    .Concat(CommandLineNodeGroup.GetTrailingUnnamedValues(_actualModelResolution.Actuals))
+                    .Select(n => n.Text)
+                    .ToImmutableArray();
+            });
         }
 
         CommandLineParseException ICommandLineParseResults.ParseWarnings => _parseWarnings.Value;
+
+        IEnumerable<string> ICommandLineParseResults.LeadingUnnamedValues => _leadingUnnamedValues.Value;
+
+        IEnumerable<string> ICommandLineParseResults.TrailingUnnamedValues => _trailingUnnamedValues.Value;
+
+        IEnumerable<string> ICommandLineParseResults.UnnamedValues => _unnamedValues.Value;
 
         T ICommandLineParseResults.Bind<T>()
         {

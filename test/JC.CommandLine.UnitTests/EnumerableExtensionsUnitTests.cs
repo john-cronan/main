@@ -39,7 +39,7 @@ namespace JC.CommandLine.UnitTests
         {
             var ints = new int[] { 1, 2, 4, 8 };
             var intsAsObjectArray = ints.Cast<object>().ToArray();
-            var intsAsImmutableArray = (ImmutableArray<int>)ints.ToImmutableArray(typeof(int));
+            var intsAsImmutableArray = (ImmutableArray<int>)ints.ToImmutableArray();
             Assert.IsTrue(ints.SequenceEqual(intsAsImmutableArray.ToArray()));
         }
     }
