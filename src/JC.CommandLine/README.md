@@ -89,7 +89,8 @@ Or, if using property binding (with the `UsePropertyBinding` method):
         public bool Verbose { get; set; }
     }
 
-See the integration tests in the test folder for additional examples of 
+See the integration tests in the test folder at 
+https://github.com/john-cronan/main for additional examples of 
 usage.
 
 ## Future Directions
