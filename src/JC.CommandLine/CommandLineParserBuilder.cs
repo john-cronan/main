@@ -23,6 +23,7 @@ namespace JC.CommandLine
         private NameMatchingOptions _nameMatchingOption;
         private bool _allowUnnamedValues;
         private char? _argsFileDelimitter;
+        private Argument _helpSwitch;
 
         /// <summary>
         /// Constructs a new instance.
@@ -55,25 +56,7 @@ namespace JC.CommandLine
         {
             Guard.IsNotNullOrEmpty(names, nameof(names));
 
-            var duplicateEntries = ModelValidation.GetDuplicateNames(names);
-            if (duplicateEntries.Any())
-            {
-                var namesAlreadyInUseStr = string.Join(", ", duplicateEntries);
-                var msg = $"The following names are duplicated: {namesAlreadyInUseStr}";
-                throw new ArgumentException(msg, nameof(names));
-            }
-            var namesAlreadyInUse = ModelValidation.GetNamesAlreadyInUse(
-                _arguments, names, _caseSensitive);
-            if (namesAlreadyInUse.Any())
-            {
-                var namesAlreadyInUseStr = string.Join(", ", namesAlreadyInUse);
-                var msg = $"The following names are already in use: {namesAlreadyInUseStr}";
-                throw new ArgumentException(msg, nameof(names));
-            }
-
-            var asImmutable = names.ToImmutableArray<string>();
-            var argument = new Argument(asImmutable, ArgumentMultiplicity.Zero, false);
-            _arguments.Add(argument);
+            AddAndReturnSwitch(names);
             return this;
         }
 
@@ -81,7 +64,7 @@ namespace JC.CommandLine
         /// Adds an argument with the specified name and number of possible
         /// or required values.
         /// </summary>
-        public CommandLineParserBuilder AddArgument(string name, 
+        public CommandLineParserBuilder AddArgument(string name,
             ArgumentMultiplicity multiplicity, bool required)
         {
             Guard.IsNotNullOrWhitespace(name, nameof(name));
@@ -93,7 +76,7 @@ namespace JC.CommandLine
         /// Adds an argument idendified by any of the specified names, and 
         /// having a specified number of possible or required values.
         /// </summary>
-        public CommandLineParserBuilder AddArgument(IEnumerable<string> names, 
+        public CommandLineParserBuilder AddArgument(IEnumerable<string> names,
             ArgumentMultiplicity multiplicity, bool required)
         {
             return AddArgument(names, multiplicity, required, ArgumentFlags.None);
@@ -144,6 +127,55 @@ namespace JC.CommandLine
         }
 
         /// <summary>
+        /// Adds a help switch with the specified name.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The presence of a help switch on a command line will weaken normal command
+        /// line validation. Conditions that would normally result in exceptions
+        /// being thrown, such as missing required options or undefined options, will
+        /// instead manifest as parse warnings, which can be received by a property
+        /// or constructor parameter named "parseWarnings" of type
+        /// <see cref="CommandLineParseException"/>.
+        /// </para>
+        /// <para>
+        /// As a result of this weakened validation, if your help switch is true, your
+        /// command line may not acutally fully pass validation.
+        /// </para>
+        /// </remarks>
+        public CommandLineParserBuilder AddHelpSwitch(string name)
+        {
+            Guard.IsNotNullOrWhitespace(name, nameof(name));
+
+            return AddHelpSwitch(new string[] { name });
+        }
+
+        /// <summary>
+        /// Adds a help switch with any of the specified names.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The presence of a help switch on a command line will weaken normal command
+        /// line validation. Conditions that would normally result in exceptions
+        /// being thrown, such as missing required options or undefined options, will
+        /// instead manifest as parse warnings, which can be received by a property
+        /// or constructor parameter named "parseWarnings" of type
+        /// <see cref="CommandLineParseException"/>.
+        /// </para>
+        /// <para>
+        /// As a result of this weakened validation, if your help switch is true, your
+        /// command line may not acutally fully pass validation.
+        /// </para>
+        /// </remarks>
+        public CommandLineParserBuilder AddHelpSwitch(IEnumerable<string> names)
+        {
+            Guard.IsNotNullOrEmpty(names, nameof(names));
+
+            _helpSwitch = AddAndReturnSwitch(names);
+            return this;
+        }
+
+        /// <summary>
         /// Creates and returns a configured command line parser.
         /// </summary>
         public ICommandLineParser CreateParser()
@@ -151,7 +183,8 @@ namespace JC.CommandLine
             var arguments = _arguments.ToImmutableArray<Argument>();
             var delimitters = _argumentDelimitters.ToImmutableArray();
             var model = new ParseModel(arguments, delimitters, _caseSensitive,
-                _nameMatchingOption, _allowUnnamedValues, _argsFileDelimitter);
+                _nameMatchingOption, _allowUnnamedValues, _argsFileDelimitter,
+                _helpSwitch);
             var objectBinder = _bindingType == BindingTypes.ConstructorBinding ?
                     (IObjectBinder)new ConstructorBinder() : (IObjectBinder)new PropertyBinder();
             return new CommandLineParser(model, objectBinder);
@@ -334,5 +367,30 @@ namespace JC.CommandLine
         /// not associated with any argument.
         /// </summary>
         public bool UnnamedValuesAllowed => _allowUnnamedValues;
+
+
+        private Argument AddAndReturnSwitch(IEnumerable<string> names)
+        {
+            var duplicateEntries = ModelValidation.GetDuplicateNames(names);
+            if (duplicateEntries.Any())
+            {
+                var namesAlreadyInUseStr = string.Join(", ", duplicateEntries);
+                var msg = $"The following names are duplicated: {namesAlreadyInUseStr}";
+                throw new ArgumentException(msg, nameof(names));
+            }
+            var namesAlreadyInUse = ModelValidation.GetNamesAlreadyInUse(
+                _arguments, names, _caseSensitive);
+            if (namesAlreadyInUse.Any())
+            {
+                var namesAlreadyInUseStr = string.Join(", ", namesAlreadyInUse);
+                var msg = $"The following names are already in use: {namesAlreadyInUseStr}";
+                throw new ArgumentException(msg, nameof(names));
+            }
+
+            var asImmutable = names.ToImmutableArray<string>();
+            var argument = new Argument(asImmutable, ArgumentMultiplicity.Zero, false);
+            _arguments.Add(argument);
+            return argument;
+        }
     }
 }

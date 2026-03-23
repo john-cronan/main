@@ -63,9 +63,8 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
                 new Argument(ImmutableArray<string>.Empty.Add("File"),
                     ArgumentMultiplicity.One, true, ArgumentFlags.ExistingFile | ArgumentFlags.ReadFileContent)
             }.ToImmutableArray();
-            var delimitters = new char[] { '/', '-' }.ToImmutableArray();
-            var model = new ParseModel(arguments, delimitters, false,
-                NameMatchingOptions.Exact, true, '@');
+            var model = TestParseModel.Create(arguments: arguments,
+                nameMatching: NameMatchingOptions.Exact);
             var resolution = new ActualModelResolution(actuals, model, _virtualFilesystem.Object);
             IObjectBinder testee = new PropertyBinder(_virtualFilesystem.Object);
             var instance = testee.CreateObject<T>(resolution);

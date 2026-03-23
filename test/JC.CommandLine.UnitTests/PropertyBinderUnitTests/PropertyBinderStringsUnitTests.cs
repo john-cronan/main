@@ -114,9 +114,8 @@ namespace JC.CommandLine.UnitTests
                 new Argument(ImmutableArray<string>.Empty.Add("Files"),
                     ArgumentMultiplicity.OneOrMore, false, ArgumentFlags.ExistingFile)
             }.ToImmutableArray();
-            var delimitters = new char[] { '-', '/' }.ToImmutableArray();
-            var model = new ParseModel(arguments, delimitters, false,
-                NameMatchingOptions.Exact, true, '@');
+            var model = TestParseModel.Create(arguments: arguments,
+                nameMatching: NameMatchingOptions.Exact);
             var resolution = new ActualModelResolution(actuals, model);
             var filesystemMock = new Mock<IFilesystem>();
             filesystemMock.Setup(m => m.DirectoryExists(It.IsAny<string>())).Returns(true);

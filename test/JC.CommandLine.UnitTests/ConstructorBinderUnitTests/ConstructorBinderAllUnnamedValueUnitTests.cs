@@ -72,9 +72,7 @@ namespace JC.CommandLine.UnitTests.ConstructorBinderUnitTests
                 new Argument("Recurse", ArgumentMultiplicity.Zero, false),
                 new Argument("Force", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var argumentDelimitters = "-/".ToImmutableArray();
-            var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new ConstructorBinder();
             var result = testee.CreateObject<AllUnnamedValuesIntegerTarget>(resolution);
@@ -98,9 +96,7 @@ namespace JC.CommandLine.UnitTests.ConstructorBinderUnitTests
                 new Argument("Recurse", ArgumentMultiplicity.Zero, false),
                 new Argument("Force", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var argumentDelimitters = "-/".ToImmutableArray();
-            var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new ConstructorBinder();
             var result = testee.CreateObject<T>(resolution);

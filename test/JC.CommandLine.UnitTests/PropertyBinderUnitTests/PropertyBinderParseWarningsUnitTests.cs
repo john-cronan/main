@@ -26,9 +26,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
                 new Argument("Recurse", ArgumentMultiplicity.Zero, false),
                 new Argument("Force", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var argumentDelimitters = new char[] { '-', '/' }.ToImmutableArray();
-            var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new PropertyBinder();
             var result = testee.CreateObject<ParseWarningsTarget>(resolution);
@@ -56,9 +54,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
                 new Argument("Recurse", ArgumentMultiplicity.Zero, false),
                 new Argument("Force", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var argumentDelimitters = new char[] { '-', '/' }.ToImmutableArray();
-            var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new PropertyBinder();
             var result = testee.CreateObject<ParseWarningsTargetWithReadOnlyProperty>(resolution);
@@ -82,9 +78,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
                 new Argument("Recurse", ArgumentMultiplicity.Zero, false),
                 new Argument("Force", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var argumentDelimitters = new char[] { '-', '/' }.ToImmutableArray();
-            var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new PropertyBinder();
             var result = testee.CreateObject<InvalidParseWarningsTarget>(resolution);
@@ -108,9 +102,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
                 new Argument("Recurse", ArgumentMultiplicity.Zero, false),
                 new Argument("Force", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var argumentDelimitters = new char[] { '-', '/' }.ToImmutableArray();
-            var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new PropertyBinder();
             var result = testee.CreateObject<MoreGeneralTypeParseWarningsTarget>(resolution);

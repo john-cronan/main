@@ -11,18 +11,26 @@ namespace JC.CommandLine
         private readonly NameMatchingOptions _nameMatching;
         private readonly bool _allowUnnamedValues;
         private readonly char? _argsFileDelimitter;
-
+        private readonly Argument _helpArgument;
+        
         public ParseModel(ImmutableArray<Argument> arguments,
             ImmutableArray<char> argumentDelimitters, bool caseSensitive,
             NameMatchingOptions nameMatching, bool allowUnnamedValues,
-            char? argsFileDelimitter)
+            char? argsFileDelimitter, Argument helpArgument)
         {
+            if (helpArgument != null && !arguments.Contains(helpArgument))
+            {
+                throw new ArgumentException($"The {nameof(helpArgument)} must be one of the defined " +
+                    $"{nameof(arguments)}", nameof(helpArgument));
+            }
+
             _arguments = arguments;
             _argumentDelimitters = argumentDelimitters;
             _caseSensitive = caseSensitive;
             _nameMatching = nameMatching;
             _allowUnnamedValues = allowUnnamedValues;
             _argsFileDelimitter = argsFileDelimitter;
+            _helpArgument = helpArgument;
         }
 
         public ImmutableArray<Argument> Arguments => _arguments;
@@ -44,5 +52,7 @@ namespace JC.CommandLine
         }
 
         public char? ArgsFileDelimitter => _argsFileDelimitter;
+
+        internal Argument HelpArgument => _helpArgument;
     }
 }
