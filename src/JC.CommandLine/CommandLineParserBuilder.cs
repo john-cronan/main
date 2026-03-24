@@ -127,6 +127,26 @@ namespace JC.CommandLine
         }
 
         /// <summary>
+        /// Adds a help switch with the default names of { "?", "Help" }.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The presence of a help switch on a command line will weaken normal command
+        /// line validation. Conditions that would normally result in exceptions
+        /// being thrown, such as missing required options or undefined options, will
+        /// instead manifest as parse warnings, which can be received by a property
+        /// or constructor parameter named "parseWarnings" of type
+        /// <see cref="CommandLineParseException"/>.
+        /// </para>
+        /// <para>
+        /// As a result of this weakened validation, if your help switch is true, your
+        /// command line may not acutally fully pass validation.
+        /// </para>
+        /// </remarks>
+        public CommandLineParserBuilder AddHelpSwitch()
+            => AddHelpSwitch(new string[] { "?", "Help" });
+
+        /// <summary>
         /// Adds a help switch with the specified name.
         /// </summary>
         /// <remarks>
