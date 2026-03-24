@@ -23,9 +23,8 @@ namespace JC.CommandLine.UnitTests.ConstructorBinderUnitTests
                 new Argument("Force", ArgumentMultiplicity.Zero, false),
                 new Argument("Recycle", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var delimitters = "-/".ToImmutableArray();
-            var model = new ParseModel(arguments, delimitters, false,
-                NameMatchingOptions.Exact, true, '@');
+            var model = TestParseModel.Create(arguments: arguments,
+                nameMatching: NameMatchingOptions.Exact);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new ConstructorBinder();
             var instance = testee.CreateObject<FlagsTarget>(resolution);

@@ -67,9 +67,7 @@ namespace JC.CommandLine.UnitTests.ConstructorBinderUnitTests
             {
                 new Argument("Matching", ArgumentMultiplicity.One, false)
             }.ToImmutableArray();
-            var argumentDelimitters = "-/".ToImmutableArray();
-            var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new ConstructorBinder();
             var result = testee.CreateObject<TrailingUnnamedValuesImmutableArrayTarget>(resolution);
@@ -92,9 +90,7 @@ namespace JC.CommandLine.UnitTests.ConstructorBinderUnitTests
             {
                 new Argument("Recycle", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var argumentDelimitters = "-/".ToImmutableArray();
-            var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new ConstructorBinder();
             var result = testee.CreateObject<T>(resolution);

@@ -33,9 +33,7 @@ namespace JC.CommandLine.UnitTests.ConstructorBinderUnitTests
                 new Argument("IncludeHidden", ArgumentMultiplicity.Zero, false),
                 new Argument("Verbose", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var delimitters = "-/".ToImmutableArray();
-            _model = new ParseModel(arguments, delimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            _model = TestParseModel.Create(arguments: arguments);
             _actualModelResolutions = new ActualModelResolution(_actuals, _model);
             _testee = new ConstructorBinder();
         }

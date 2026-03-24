@@ -9,14 +9,6 @@ namespace JC.CommandLine.UnitTests
     [TestClass]
     public class ActualModelResolutionUnitTests
     {
-        private readonly ParseModel _nullParseModel;
-
-        public ActualModelResolutionUnitTests()
-        {
-            _nullParseModel = new ParseModel(ImmutableArray<Argument>.Empty,
-                new char[] { '-', '/' }.ToImmutableArray(), false, NameMatchingOptions.Stem,
-                true, '@');
-        }
         [TestMethod]
         public void Actuals_match_ctor_parameter()
         {
@@ -25,7 +17,7 @@ namespace JC.CommandLine.UnitTests
                     .AddExeNode("program.exe")
                     .AddArgument("files", "FileA.txt", "FileB.txt")
                     .GetCommandLine();
-            var testee = new ActualModelResolution(actuals, _nullParseModel);
+            var testee = new ActualModelResolution(actuals, TestParseModel.Create());
             Assert.IsTrue(CommandLineNodeCompare.Equals(actuals, testee.Actuals, StringComparison.InvariantCultureIgnoreCase));
         }
 
@@ -42,8 +34,7 @@ namespace JC.CommandLine.UnitTests
                 new Argument("Force", ArgumentMultiplicity.Zero, false),
                 new Argument("Files", ArgumentMultiplicity.OneOrMore, true)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                false, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var testee = new ActualModelResolution(actuals, model);
             Assert.IsFalse(testee.AmbiguousActuals.IsDefault);
             Assert.AreEqual(1, testee.AmbiguousActuals.Length);
@@ -62,8 +53,7 @@ namespace JC.CommandLine.UnitTests
             {
                 new Argument("Recurse", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                false, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var testee = new ActualModelResolution(actuals, model);
             Assert.AreEqual(1, testee.Matches.Count());
             Assert.AreEqual(0, testee.AmbiguousActuals.Count());
@@ -83,8 +73,7 @@ namespace JC.CommandLine.UnitTests
             {
                 new Argument("Files", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                false, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var testee = new ActualModelResolution(actuals, model);
             Assert.AreEqual(1, testee.Matches.Count());
             Assert.AreEqual(0, testee.AmbiguousActuals.Count());
@@ -105,8 +94,7 @@ namespace JC.CommandLine.UnitTests
             {
                 new Argument(names,  ArgumentMultiplicity.OneOrMore, false)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                false, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var testee = new ActualModelResolution(actuals, model);
             Assert.AreEqual(1, testee.Matches.Count());
             Assert.AreEqual(0, testee.AmbiguousActuals.Count());
@@ -131,8 +119,7 @@ namespace JC.CommandLine.UnitTests
                 expectedDirectoryArgument,
                 expectedRecurseArgument
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                false, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var testee = new ActualModelResolution(actuals, model);
             Assert.AreEqual(arguments.Count(), testee.Model.Arguments.Count());
             var actualDirectoryArgument = testee.Model.Arguments.Single(m => m.Names.SequenceEqual(expectedDirectoryArgument.Names));
@@ -158,8 +145,7 @@ namespace JC.CommandLine.UnitTests
                 new Argument(ImmutableArray<string>.Empty.Add("Recurse"),
                     ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                false, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var testee = new ActualModelResolution(actuals, model);
             Assert.AreEqual(1, testee.Matches.Count());
             Assert.AreEqual(0, testee.AmbiguousActuals.Count());
@@ -182,8 +168,7 @@ namespace JC.CommandLine.UnitTests
                 new Argument(ImmutableArray<string>.Empty.Add("Recurse"),
                     ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                false, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var testee = new ActualModelResolution(actuals, model);
             Assert.AreEqual(1, testee.Matches.Count());
             Assert.AreEqual(0, testee.AmbiguousActuals.Count());
@@ -205,8 +190,7 @@ namespace JC.CommandLine.UnitTests
             {
                 new Argument(names, ArgumentMultiplicity.OneOrMore, false),
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                false, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var testee = new ActualModelResolution(actuals, model);
             Assert.AreEqual(1, testee.Matches.Count());
             Assert.AreEqual(0, testee.AmbiguousActuals.Count());
@@ -231,8 +215,7 @@ namespace JC.CommandLine.UnitTests
                 new Argument(new string[] {"Recurse" }.ToImmutableArray(),
                     ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                true, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments, caseSensitive: true);
             var testee = new ActualModelResolution(actuals, model);
             Assert.AreEqual(0, testee.Matches.Count());
             Assert.AreEqual(0, testee.AmbiguousActuals.Count());
@@ -254,8 +237,7 @@ namespace JC.CommandLine.UnitTests
                 new Argument(new string[]{"Really" }.ToImmutableArray(),
                     ArgumentMultiplicity.Zero, true)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                true, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments, caseSensitive: true);
             var testee = new ActualModelResolution(nodeGroups, model);
             (var errors, var warnings) = testee.Validate();
             Assert.IsNotNull(errors);
@@ -279,8 +261,7 @@ namespace JC.CommandLine.UnitTests
                 new Argument(new string[] { "Recursive" }.ToImmutableArray(),
                     ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                true, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments, caseSensitive: true);
             var testee = new ActualModelResolution(nodeGroups, model);
             (var errors, var warnings) = testee.Validate();
             Assert.IsNotNull(errors);
@@ -301,8 +282,7 @@ namespace JC.CommandLine.UnitTests
                 new Argument(new string[]{"Really" }.ToImmutableArray(),
                     ArgumentMultiplicity.Zero, true)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                true, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments, caseSensitive: true);
             var testee = new ActualModelResolution(nodeGroups, model);
             (var errors, var warnings) = testee.Validate();
             Assert.IsNotNull(errors);
@@ -319,9 +299,8 @@ namespace JC.CommandLine.UnitTests
                     .AddExeNode(@"C:\Program Files\FormatHD.exe")
                     .AddUnnamedArgument("Really")
                     .GetCommandLine();
-            var arguments = new Argument[] { }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                true, NameMatchingOptions.Stem, false, '@');
+            var model = TestParseModel.Create(caseSensitive: true,
+                allowUnnamedValues: false);
             var testee = new ActualModelResolution(nodeGroups, model);
             (var errors, var warnings) = testee.Validate();
             Assert.IsNotNull(errors);
@@ -342,8 +321,7 @@ namespace JC.CommandLine.UnitTests
                 new Argument(new string[] { "Directory" }.ToImmutableArray(),
                     ArgumentMultiplicity.One, true)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                true, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments, caseSensitive: true);
             var testee = new ActualModelResolution(nodeGroups, model);
             (var errors, var warnings) = testee.Validate();
             Assert.IsNotNull(errors);
@@ -364,8 +342,7 @@ namespace JC.CommandLine.UnitTests
                 new Argument(new string[] { "Directory" }.ToImmutableArray(),
                         ArgumentMultiplicity.OneOrMore, true)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                true, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments, caseSensitive: true);
             var testee = new ActualModelResolution(nodeGroups, model);
             (var errors, var warnings) = testee.Validate();
             Assert.IsNotNull(errors);
@@ -386,8 +363,7 @@ namespace JC.CommandLine.UnitTests
                 new Argument(new string[] { "Recurse" }.ToImmutableArray(),
                         ArgumentMultiplicity.Zero, true)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, new char[] { '-', '/' }.ToImmutableArray(),
-                true, NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments, caseSensitive: true);
             var testee = new ActualModelResolution(nodeGroups, model);
             (var errors, var warnings) = testee.Validate();
             Assert.IsNotNull(errors);

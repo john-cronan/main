@@ -20,7 +20,7 @@ namespace JC.CommandLine.UnitTests
                 new Argument("Recurse", ArgumentMultiplicity.Zero, false, ArgumentFlags.None)
             }.ToImmutableArray(),
             "-/".ToImmutableArray(),
-            false, NameMatchingOptions.Stem, true, '@');
+            false, NameMatchingOptions.Stem, true, '@', null);
 
         [TestMethod]
         public void Returns_single_argument_value()
@@ -186,8 +186,7 @@ namespace JC.CommandLine.UnitTests
             {
                 new Argument("BatchSize", ArgumentMultiplicity.One, true)
             }.ToImmutableArray();
-            var model = new ParseModel(arguments, "-/".ToImmutableArray(), false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolutions = new ActualModelResolution(actuals, model);
             var binder = new PropertyBinder();
             var filesystem = new Mock<IFilesystem>();

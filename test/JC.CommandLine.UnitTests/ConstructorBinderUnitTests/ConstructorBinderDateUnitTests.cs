@@ -83,9 +83,7 @@ namespace JC.CommandLine.UnitTests.ConstructorBinderUnitTests
                 new Argument("Dates", ArgumentMultiplicity.OneOrMore, false),
                 new Argument("Start", ArgumentMultiplicity.One, false)
             }.ToImmutableArray();
-            var delimitters = "-/".ToImmutableArray();
-            var model = new ParseModel(arguments, delimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new ConstructorBinder();
             var instance = testee.CreateObject<T>(resolution);

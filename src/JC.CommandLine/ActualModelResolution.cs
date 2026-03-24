@@ -9,6 +9,7 @@ namespace JC.CommandLine
     {
         private readonly ImmutableArray<CommandLineNodeGroup> _actuals;
         private readonly ImmutableArray<CommandLineNodeGroup> _ambiguousActuals;
+        private readonly bool _errorsAsWarnings;
         private readonly IFilesystem _filesystem;
         private readonly ImmutableArray<ActualModelMatch> _matches;
         private readonly ParseModel _model;
@@ -76,10 +77,12 @@ namespace JC.CommandLine
                      item.Actual,
                      item.MatchingModelArguments.First()
                  )).ToImmutableArray();
+
+            _errorsAsWarnings = _model.HelpArgument != null
+                && _matches.Any(m => m.Model == _model.HelpArgument);
         }
 
-        public (CommandLineParseException, CommandLineParseException)
-            Validate()
+        public (CommandLineParseException, CommandLineParseException) Validate()
         {
             var errors = new List<CommandLineParseException>();
             var warnings = new List<CommandLineParseException>();
@@ -106,7 +109,7 @@ namespace JC.CommandLine
                 _undefinedActuals
                     .Select(u => $"The argument '{u.KeyNode.Text}' is undefined")
                     .Select(m => new CommandLineParseException(m));
-            errors.AddRange(undefined);
+            (_errorsAsWarnings ? warnings : errors).AddRange(undefined);
         }
 
         private void ValidateAmbiguousActuals(
@@ -117,7 +120,7 @@ namespace JC.CommandLine
                 _ambiguousActuals
                     .Select(a => $"The argument '{a.KeyNode.Text}' is ambiguous")
                     .Select(m => new CommandLineParseException(m));
-            errors.AddRange(ambiguous);
+            (_errorsAsWarnings ? warnings : errors).AddRange(ambiguous);
         }
 
         private void ValidateMissing(
@@ -128,7 +131,7 @@ namespace JC.CommandLine
                 _missingModelArguments
                     .Select(m => $"The argument '{m.Names[0]}' is required")
                     .Select(m => new CommandLineParseException(m));
-            errors.AddRange(missing);
+            (_errorsAsWarnings ? warnings : errors).AddRange(missing);
         }
 
         private void ValidateUnnamedValues(
@@ -139,7 +142,7 @@ namespace JC.CommandLine
             {
                 var msg = "Unnamed values are not permitted";
                 var error = new CommandLineParseException(msg);
-                errors.Add(error);
+                (_errorsAsWarnings ? warnings : errors).Add(error);
             }
             if (_actuals.Count(a => a.IsUnnamedValuesNodeGroup) > 2)
             {
@@ -158,21 +161,21 @@ namespace JC.CommandLine
                 && match.Actual.ValueNodes.Count() != 1
                 select $"The argument '{match.Actual.KeyNode.Text} is required to have exactly one value" into msg
                 select new CommandLineParseException(msg);
-            errors.AddRange(exactlyOneValue);
+            (_errorsAsWarnings ? warnings : errors).AddRange(exactlyOneValue);
             var oneOrMoreValues =
                 from match in _matches
                 where match.Model.Multiplicity == ArgumentMultiplicity.OneOrMore
                 && !match.Actual.HasValues
                 select $"The argument '{match.Actual.KeyNode.Text} is required to have one or more values" into msg
                 select new CommandLineParseException(msg);
-            errors.AddRange(oneOrMoreValues);
+            (_errorsAsWarnings ? warnings : errors).AddRange(oneOrMoreValues);
             var zeroValues =
                 from match in _matches
                 where match.Model.Multiplicity == ArgumentMultiplicity.Zero
                 && match.Actual.HasValues
                 select $"The argument '{match.Actual.KeyNode.Text} may not have values" into msg
                 select new CommandLineParseException(msg);
-            errors.AddRange(zeroValues);
+            (_errorsAsWarnings ? warnings : errors).AddRange(zeroValues);
         }
 
         private void ValidateFilesAndDirectories(
@@ -187,7 +190,7 @@ namespace JC.CommandLine
                 where !_filesystem.FileExists(fileName)
                 select $"The file {fileName} could not be found" into msg
                 select new CommandLineParseException(msg);
-            errors.AddRange(fileNotFound);
+            (_errorsAsWarnings ? warnings : errors).AddRange(fileNotFound);
             var dirNotFound =
                 from match in _matches
                 where match.Model.Flags.HasFlag(ArgumentFlags.ExistingDirectory)
@@ -196,7 +199,7 @@ namespace JC.CommandLine
                 where !_filesystem.DirectoryExists(dirName)
                 select $"The Directory {dirName} could not be found" into msg
                 select new CommandLineParseException(msg);
-            errors.AddRange(dirNotFound);
+            (_errorsAsWarnings ? warnings : errors).AddRange(dirNotFound);
         }
 
 

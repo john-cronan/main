@@ -93,9 +93,8 @@ namespace JC.CommandLine.UnitTests.ConstructorBinderUnitTests
                 new Argument(ImmutableArray<string>.Empty.Add("ObjectIDs"),
                     ArgumentMultiplicity.OneOrMore, false)
             }.ToImmutableArray();
-            var delimitters = new char[] { '-', '/' }.ToImmutableArray();
-            var model = new ParseModel(arguments, delimitters, false,
-                NameMatchingOptions.Exact, true, '@');
+            var model = TestParseModel.Create(arguments: arguments,
+                nameMatching: NameMatchingOptions.Exact);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new ConstructorBinder();
             var instance = testee.CreateObject<T>(resolution);

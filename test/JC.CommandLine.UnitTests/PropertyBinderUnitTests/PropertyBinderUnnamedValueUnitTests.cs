@@ -24,9 +24,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
                 new Argument("Recurse", ArgumentMultiplicity.Zero, false),
                 new Argument("Force", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var argumentDelimitters = new char[] { '-', '/' }.ToImmutableArray();
-            var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new PropertyBinder();
             var result = testee.CreateObject<AllUnnamedValuesValidTarget>(resolution);
@@ -51,9 +49,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
                 new Argument("Recurse", ArgumentMultiplicity.Zero, false),
                 new Argument("Force", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var argumentDelimitters = new char[] { '-', '/' }.ToImmutableArray();
-            var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new PropertyBinder();
             var result = testee.CreateObject<AllUnnamedValuesImmutableArrayTarget>(resolution);
@@ -79,9 +75,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
                 new Argument("Recurse", ArgumentMultiplicity.Zero, false),
                 new Argument("Force", ArgumentMultiplicity.Zero, false)
             }.ToImmutableArray();
-            var argumentDelimitters = new char[] { '-', '/' }.ToImmutableArray();
-            var model = new ParseModel(arguments, argumentDelimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolution = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new PropertyBinder();
             var result = testee.CreateObject<LeadingUnnamedValuesEnumerableTarget>(resolution);
@@ -106,9 +100,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
             {
                 new Argument("Delete", ArgumentMultiplicity.Zero, true)
             }.ToImmutableArray();
-            var delimitters = new char[] { '-', '/' }.ToImmutableArray();
-            var model = new ParseModel(arguments, delimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolutions = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new PropertyBinder();
             var result = testee.CreateObject<TrailingUnnamedValuesEnumerableTarget>(resolutions);
@@ -130,9 +122,7 @@ namespace JC.CommandLine.UnitTests.PropertyBinderUnitTests
             {
                 new Argument("Files", ArgumentMultiplicity.OneOrMore, true)
             }.ToImmutableArray();
-            var delimitters = new char[] { '-', '/' }.ToImmutableArray();
-            var model = new ParseModel(arguments, delimitters, false,
-                NameMatchingOptions.Stem, true, '@');
+            var model = TestParseModel.Create(arguments: arguments);
             var resolutions = new ActualModelResolution(actuals, model);
             IObjectBinder testee = new PropertyBinder();
             var result = testee.CreateObject<TrailingUnnamedValuesEnumerableTarget>(resolutions);
