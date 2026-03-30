@@ -24,14 +24,10 @@ namespace JC.CommandLine
             Guard.IsNotNull(arguments, nameof(arguments));
             Guard.IsNotNullOrEmpty(argumentDelimitters, nameof(argumentDelimitters));
 
-            var exe = Environment.GetCommandLineArgs().First();
-            foreach (var arg in arguments)
+            yield return new CommandLineNode(CommandLineNodeTypes.Exe, arguments.First());
+            foreach (var arg in arguments.Skip(1))
             {
-                if (arg.Equals(exe, StringComparison.InvariantCulture))
-                {
-                    yield return new CommandLineNode(CommandLineNodeTypes.Exe, arg);
-                }
-                else if (IsArgumentName(arg, argumentDelimitters))
+                if (IsArgumentName(arg, argumentDelimitters))
                 {
                     yield return new CommandLineNode(CommandLineNodeTypes.ArgumentName, arg.Substring(1));
                 }
@@ -39,19 +35,6 @@ namespace JC.CommandLine
                 {
                     yield return new CommandLineNode(CommandLineNodeTypes.Value, arg);
                 }
-                
-                // if (IsArgumentName(arg, argumentDelimitters))
-                // {
-                //     yield return new CommandLineNode(CommandLineNodeTypes.ArgumentName, arg.Substring(1));
-                // }
-                // else if (arg.Equals(exe, StringComparison.InvariantCulture))
-                // {
-                //     yield return new CommandLineNode(CommandLineNodeTypes.Exe, arg);
-                // }
-                // else
-                // {
-                //     yield return new CommandLineNode(CommandLineNodeTypes.Value, arg);
-                // }
             }
         }
 

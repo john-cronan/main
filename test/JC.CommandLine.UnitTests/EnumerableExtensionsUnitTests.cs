@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -41,6 +42,52 @@ namespace JC.CommandLine.UnitTests
             var intsAsObjectArray = ints.Cast<object>().ToArray();
             var intsAsImmutableArray = (ImmutableArray<int>)ints.ToImmutableArray();
             Assert.IsTrue(ints.SequenceEqual(intsAsImmutableArray.ToArray()));
+        }
+
+        [TestMethod]
+        public void StartsWith_SequenceA_starts_with_sequenceB()
+        {
+            var sequenceA = new[] { 1, 2, 3, 4, 5 };
+            var sequenceB = new[] { 1, 2, 3 };
+            var result = sequenceA.StartsWith(sequenceB);
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void StartsWith_SequenceA_does_not_start_with_sequenceB()
+        {
+            var sequenceA = new[] { 1, 2, 3 };
+            var sequenceB = new[] { 1, 2, 3, 4, 5 };
+            var result = sequenceA.StartsWith(sequenceB);
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void StartsWith_Sequences_completely_different()
+        {
+            var sequenceA = new[] { 1, 2, 3 };
+            var sequenceB = new[] { 4, 5, 6 };
+            var result = sequenceA.StartsWith(sequenceB);
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void StartsWith_Compares_strings_case_insensitively()
+        {
+            var sequenceA = new[] { "a", "b", "c" };
+            var sequenceB = new[] { "A", "B" };
+            var result = sequenceA.StartsWith(sequenceB,
+                (a, b) => string.Equals(a, b, StringComparison.InvariantCultureIgnoreCase));
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void StartsWith_Sequences_equal()
+        {
+            var sequenceA = new[] { 1, 2, 3 };
+            var sequenceB = new[] { 1, 2, 3 };
+            var result = sequenceA.StartsWith(sequenceB);
+            Assert.IsTrue(result);
         }
     }
 }

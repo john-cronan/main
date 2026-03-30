@@ -12,9 +12,9 @@ namespace JC.CommandLine.UnitTests
         {
             var commandLine = new string[]
             {
-                "FileA.txt", "FileB.txt", "-recurse", "FileC.txt"
+                "HowDoYouRecurseFiles.exe", "FileA.txt", "FileB.txt", "-recurse", "FileC.txt"
             };
-            var nodes = CommandLineNode.Parse(commandLine, new char[] { '-' }).ToArray();
+            var nodes = CommandLineNode.Parse(commandLine, new char[] { '-' }).Skip(1).ToArray();
             Assert.AreEqual(4, nodes.Count());
             var expected = new CommandLineNodeTypes[]
             {
@@ -29,8 +29,8 @@ namespace JC.CommandLine.UnitTests
         {
             var commandLine = new string[]
             {
-                "-files", "FileA.txt", "FileB.txt", "FileC.txt",
-                "-recycle"
+                "Delete.exe", "-files", "FileA.txt", "FileB.txt", 
+                "FileC.txt", "-recycle"
             };
             var nodes = CommandLineNode.Parse(commandLine, new char[] { '-' }).ToArray();
             var counts =
@@ -42,7 +42,7 @@ namespace JC.CommandLine.UnitTests
                     Count = g.Count()
                 })
                 .ToDictionary(x => x.NodeType, x => x.Count);
-            Assert.IsFalse(counts.TryGetValue(CommandLineNodeTypes.Exe, out var value));
+            Assert.IsTrue(counts.TryGetValue(CommandLineNodeTypes.Exe, out var value));
             Assert.AreEqual(2, counts[CommandLineNodeTypes.ArgumentName]);
             Assert.AreEqual(3, counts[CommandLineNodeTypes.Value]);
         }
@@ -65,8 +65,8 @@ namespace JC.CommandLine.UnitTests
         {
             var commandLine = new string[]
             {
-                "-files", "FileA.txt", "FileB.txt", "FileC.txt",
-                "/recycle"
+                "Program.exe", "-files", "FileA.txt", "FileB.txt", 
+                "FileC.txt", "/recycle"
             };
             var nodes = CommandLineNode.Parse(commandLine, new char[] { '-', '/' }).ToArray();
             var counts =
@@ -87,10 +87,11 @@ namespace JC.CommandLine.UnitTests
         {
             var commandLine = new string[]
             {
-                "-files", "FileA.txt", "FileB.txt", "FileC.txt"
+                "Mangle.exe", "-files", "FileA.txt", "FileB.txt", "FileC.txt"
             };
             var nodes = CommandLineNode.Parse(commandLine, new char[] { '/' });
-            Assert.IsTrue(nodes.All(n => n.NodeType == CommandLineNodeTypes.Value));
+            Assert.IsTrue(nodes.All(n => n.NodeType == CommandLineNodeTypes.Exe
+                || n.NodeType == CommandLineNodeTypes.Value));
         }
 
         [TestMethod]
@@ -98,12 +99,12 @@ namespace JC.CommandLine.UnitTests
         {
             var commandLine = new string[]
             {
-                "-files", "FileA.txt", "FileB.txt", "FileC.txt"
+                "Obliterate.exe", "-files", "FileA.txt", "FileB.txt", "FileC.txt"
             };
             var nodes = CommandLineNode.Parse(commandLine, new char[] { '-' }).ToArray();
-            Assert.IsTrue(commandLine[0].Substring(1).Equals(nodes[0].Text, StringComparison.InvariantCulture));
-            Assert.IsTrue(commandLine[1].Equals(nodes[1].Text, StringComparison.InvariantCulture));
+            Assert.IsTrue(commandLine[1].Substring(1).Equals(nodes[1].Text, StringComparison.InvariantCulture));
             Assert.IsTrue(commandLine[2].Equals(nodes[2].Text, StringComparison.InvariantCulture));
+            Assert.IsTrue(commandLine[3].Equals(nodes[3].Text, StringComparison.InvariantCulture));
 
         }
     }

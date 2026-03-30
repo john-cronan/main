@@ -13,11 +13,15 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <Description>An easy to use, strongly-typed, and versatile command line parser.</Description>
     <Authors>John Cronan</Authors>
-    <Version>2.0.0</Version>
+    <Version>3.0.0</Version>
     <PackageReleaseNotes>2.0.0 - Addition of "help switches". The presence of a defined help switch on a command line 
 weakens ordinary validation (parse errors surface as warnings instead), so that a command
 line that doesn't really need to be valid anyway (help is being requested) can be parsed.</PackageReleaseNotes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="CommandLineParser.cs~RF33d7df9c.TMP" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />

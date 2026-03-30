@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 
 namespace JC.CommandLine
 {
@@ -9,6 +8,21 @@ namespace JC.CommandLine
     /// </summary>
     public interface ICommandLineParser
     {
+        /// <summary>
+        /// Parses the command line returned by <see cref="Environment.GetCommandLineArgs()"/>
+        /// and returns true if a help switch is both defined and present on the actual
+        /// command line, without applying full validation (i.e. conditions that usually 
+        /// throw exceptions will not).
+        /// </summary>
+        bool IsHelpSwitchPresent();
+
+        /// <summary>
+        /// Parses the specified command line and returns true if a help switch is both 
+        /// defined and present on the actual command line, without applying full validation
+        /// (i.e. conditions that usually throw exceptions will not).
+        /// </summary>
+        bool IsHelpSwitchPresent(IEnumerable<string> arguments);
+
         /// <summary>
         /// Parses the command line returned by invoking
         /// <see cref="Environment.GetCommandLineArgs()"/>
@@ -31,10 +45,27 @@ namespace JC.CommandLine
         ICommandLineParseResults Parse(IEnumerable<string> arguments);
 
         /// <summary>
+        /// Parses the command line returned by 
+        /// <see cref="Environment.GetCommandLineArgs()"/> and returns the 
+        /// leading unnamed values portion (which, depending on your command
+        /// line, may identify a command), without applying full validation 
+        /// (i.e. conditions that usually throw exceptions will not).
+        /// </summary>
+        IEnumerable<string> ParseLeadingUnnamedValues();
+
+        /// <summary>
+        /// Parses the specified command line and returns the leading unnamed 
+        /// values portion (which, depending on your command line, may identify 
+        /// a command), without applying full validation (i.e. conditions that 
+        /// usually throw exceptions will not).
+        /// </summary>
+        IEnumerable<string> ParseLeadingUnnamedValues(IEnumerable<string> arguments);
+
+        /// <summary>
         /// Gets a collection of characters that will be used to delimit 
         /// argument names.
         /// </summary>
-        ImmutableArray<char> ArgumentDelimitters { get; }
+        IEnumerable<char> ArgumentDelimitters { get; }
 
         /// <summary>
         /// Gets a value indicating whether argument names are treated as
