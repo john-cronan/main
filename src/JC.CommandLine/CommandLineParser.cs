@@ -40,6 +40,24 @@ namespace JC.CommandLine
             }
         }
 
+        bool ICommandLineParser.IsHelpSwitchPresent()
+            => (this as ICommandLineParser).IsHelpSwitchPresent(Environment.GetCommandLineArgs());
+
+        bool ICommandLineParser.IsHelpSwitchPresent(IEnumerable<string> arguments)
+        {
+            Guard.IsNotNullOrEmpty(arguments, nameof(arguments));
+
+            var effectiveArgs = _model.ArgsFileDelimitter == null
+                                    ? arguments
+                                    : new CommandLineArgumentEnumerator(_model.ArgsFileDelimitter.Value, _filesystem).Enumerate(arguments);
+            var nodes = CommandLineNode.Parse(effectiveArgs, _model.ArgumentDelimitters);
+            return (from node in nodes
+                    where _model.HelpArgument != null
+                        && node.NodeType == CommandLineNodeTypes.ArgumentName
+                        && NameMatching.IsMatch(node.Text, _model.HelpArgument.Names, _model.NameMatching, _model.StringComparisons)
+                    select node).Any();
+        }
+
         ICommandLineParseResults ICommandLineParser.Parse()
         {
             return (this as ICommandLineParser).Parse(Environment.GetCommandLineArgs());
@@ -60,7 +78,7 @@ namespace JC.CommandLine
             nodeGroups = ParsingFixups.ConsolidateDuplicateArguments(
                 nodeGroups, _model.Arguments, _model.StringComparisons, _model.NameMatching);
             var resolutions = new ActualModelResolution(nodeGroups, _model, _filesystem);
-            (var errors, var warnings) = resolutions.Validate();
+            (var errors, _) = resolutions.Validate();
             if (errors != null)
             {
                 if (errors.ParseErrors.Count() == 1)
@@ -77,10 +95,26 @@ namespace JC.CommandLine
             return results;
         }
 
+        IEnumerable<string> ICommandLineParser.ParseLeadingUnnamedValues()
+            => (this as ICommandLineParser).ParseLeadingUnnamedValues(Environment.GetCommandLineArgs());
+
+        IEnumerable<string> ICommandLineParser.ParseLeadingUnnamedValues(IEnumerable<string> arguments)
+        {
+            Guard.IsNotNullOrEmpty(arguments, nameof(arguments));
+
+            var effectiveArgs = _model.ArgsFileDelimitter == null
+                                    ? arguments
+                                    : new CommandLineArgumentEnumerator(_model.ArgsFileDelimitter.Value, _filesystem).Enumerate(arguments);
+            var nodes = CommandLineNode.Parse(effectiveArgs, _model.ArgumentDelimitters);
+            var nodeGroups = CommandLineNodeGroup.Parse(nodes).ToImmutableArray();
+            nodeGroups = ParsingFixups.SplitExeNode(nodeGroups);
+            return CommandLineNodeGroup.GetLeadingUnnamedValues(nodeGroups).Select(ng => ng.Text);
+        }
+
 
         public bool AllowUnnamedValues => _model.AllowUnnamedValues;
 
-        ImmutableArray<char> ICommandLineParser.ArgumentDelimitters => _model.ArgumentDelimitters;
+        IEnumerable<char> ICommandLineParser.ArgumentDelimitters => _model.ArgumentDelimitters;
 
         bool ICommandLineParser.CaseSensitive => _model.CaseSensitive;
 

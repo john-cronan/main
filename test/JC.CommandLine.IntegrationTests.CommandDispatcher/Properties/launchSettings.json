@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "JC.CommandLine.IntegrationTests.CommandDispatcher": {
+      "commandName": "Project",
+      "commandLineArgs": "Drive Type -r C:\\"
+    }
+  }
+}

@@ -8,6 +8,51 @@ namespace JC.CommandLine
 {
     internal static class EnumerableExtensions
     {
+        public static bool StartsWith<T>(this IEnumerable<T> source, IEnumerable<T> inner)
+            => StartsWith(source, inner, (a, b) => EqualityComparer<T>.Default.Equals(a, b));
+
+        public static bool StartsWith<T>(this IEnumerable<T> source, IEnumerable<T> inner,
+            Func<T, T, bool> equalityComparer)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (inner == null)
+            {
+                throw new ArgumentNullException(nameof(inner));
+            }
+            if (equalityComparer == null)
+            {
+                throw new ArgumentNullException(nameof(equalityComparer));
+            }
+
+            using var sourceEnumerator = source.GetEnumerator();
+            using var innerEnumerator = inner.GetEnumerator();
+            while (true)
+            {
+                var sourceHasCurrent = sourceEnumerator.MoveNext();
+                var innerHasCurrent = innerEnumerator.MoveNext();
+                if (sourceHasCurrent && innerHasCurrent
+                    && !equalityComparer(sourceEnumerator.Current, innerEnumerator.Current))
+                {
+                    return false;
+                }
+                else if (sourceHasCurrent && !innerHasCurrent)
+                {
+                    return true;
+                }
+                else if (!sourceHasCurrent && innerHasCurrent)
+                {
+                    return false;
+                }
+                else if (!sourceHasCurrent && !innerHasCurrent)
+                {
+                    return true;
+                }
+            }
+        }
+
         public static Array ToArray(this IEnumerable<object> self, Type ofType)
         {
             Guard.IsNotNull(self, nameof(self));
