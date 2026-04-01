@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JC.CommandLine.IntegrationT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JC.CommandLine.IntegrationTests.ArgsFiles", "test\JC.CommandLine.IntegrationTests.ArgsFiles\JC.CommandLine.IntegrationTests.ArgsFiles.csproj", "{613FF379-CD04-48F9-9F6E-B7125B380E9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JC.CommandLine.IntegrationTests.CommandDispatch", "test\JC.CommandLine.IntegrationTests.CommandDispatcher\JC.CommandLine.IntegrationTests.CommandDispatch.csproj", "{AF22B168-021F-4477-AA78-0E0053588745}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{613FF379-CD04-48F9-9F6E-B7125B380E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{613FF379-CD04-48F9-9F6E-B7125B380E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{613FF379-CD04-48F9-9F6E-B7125B380E9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF22B168-021F-4477-AA78-0E0053588745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF22B168-021F-4477-AA78-0E0053588745}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF22B168-021F-4477-AA78-0E0053588745}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF22B168-021F-4477-AA78-0E0053588745}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +108,7 @@ Global
 		{3C7B4F7F-45B7-C082-ABE7-B0C4931462E8} = {3CA76E2E-7AC8-4721-9A24-991AE20D448C}
 		{39773841-079F-4194-9ABB-26D005449A3A} = {3CA76E2E-7AC8-4721-9A24-991AE20D448C}
 		{613FF379-CD04-48F9-9F6E-B7125B380E9B} = {3CA76E2E-7AC8-4721-9A24-991AE20D448C}
+		{AF22B168-021F-4477-AA78-0E0053588745} = {3CA76E2E-7AC8-4721-9A24-991AE20D448C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {39AE0B68-832C-4D7D-9E7C-9C35EEA8EC14}
