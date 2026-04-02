@@ -14,12 +14,9 @@
     <Description>An easy to use, strongly-typed, and versatile command line parser.</Description>
     <Authors>John Cronan</Authors>
     <Version>3.0.0</Version>
-    <PackageReleaseNotes>3.0.0 - Improved support for complex command lines, where a single utility handles multiple 
-commands (a la the dotnet and azure CLIs), including a CommandDispatcher.
+    <PackageReleaseNotes>3.0.0 - Improved support for complex command lines, where a single utility handles multiple commands (a la the dotnet and azure CLIs), including a CommandDispatcher.
 
-2.0.0 - Addition of "help switches". The presence of a defined help switch on a command line 
-weakens ordinary validation (parse errors surface as warnings instead), so that a command
-line that doesn't really need to be valid anyway (help is being requested) can be parsed.</PackageReleaseNotes>
+2.0.0 - Addition of "help switches". The presence of a defined help switch on a command line weakens ordinary validation (parse errors surface as warnings instead), so that a command line that doesn't really need to be valid anyway (help is being requested) can be parsed.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
