@@ -23,6 +23,7 @@ namespace JC.CommandLine
             _converters.Add<ReadFileContentConverter>();
             _converters.Add<BinaryValueConverter>();
             _converters.Add<TypeDescriptorConverter>();
+            _converters.Add<ParseMethodConverter>();
         }
 
         public IEnumerable<object> Convert(string value, TargetType targetType, ArgumentFlags argumentFlags)
